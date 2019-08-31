@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace CharacterRoller.Data.Migrations
+namespace CharacterRoller.Migrations
 {
-    public partial class Third : Migration
+    public partial class fourth : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

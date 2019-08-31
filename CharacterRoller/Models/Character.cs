@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -44,31 +45,40 @@ namespace CharacterRoller.Models
         public Skill Suvival { get; set; }
         #endregion
 
-        public Race race { get; set; } = new Race();
+        public Race characterRace { get; set; }
+
+        public string characterRaceId { get; set; }
 
         public Class characterClass { get; set; } = new Class();
+        public string characterClassId { get; set; }
     }
 
     public class Race
     {
         [Key]
         public string Id { get; set; }
-        public Dictionary<string, int> abilityScoreImprovements = new Dictionary<string, int>
-        {
-            {"Strenght", 0 },
-            {"Dexterity", 0 },
-            {"Constitution", 0 },
-            {"Intelligence", 0 },
-            {"Wisdom", 0 },
-            {"Charisma", 0 }
-        };
+        public int StrenghtImprovement { get; set; } = 0;
+        public int DexterityImprovement { get; set; } = 0;
+        public int ConstitutionImprovement { get; set; } = 0;
+        public int IntelligenceImprovement { get; set; } = 0;
+        public int WisdomImprovement { get; set; } = 0;
+        public int CharismaImprovement { get; set; } = 0;
 
-        public Dictionary<string, string> raceFeatures = new Dictionary<string, string>();
+        public List<Character> Characters = new List<Character>();
+
+        public List<RaceFeature> raceFeatures = new List<RaceFeature>();
 
         public Race()
         {
             this.Id = this.ToString();
         }
+    }
+    public class RaceFeature
+    {
+
+        public string raceFeatureId { get; set; }
+        public string race { get; set; }
+        public string Feature { get; set; }
     }
 
     public class Class
@@ -76,12 +86,23 @@ namespace CharacterRoller.Models
         [Key]
         public string Id { get; set; }
         public List<Dictionary<string, int>> abilityScoreImprovements = new List<Dictionary<string, int>>();
-        public Dictionary<string, string> classFeatures = new Dictionary<string, string>();
+        public List<ClassFeature> raceFeatures = new List<ClassFeature>();
+        public List<Character> Characters = new List<Character>();
 
         public Class()
         {
             this.Id = this.ToString();
         }
+    }
+
+    public class ClassFeature
+    {
+        public string classFeatureId { get; set; }
+        public int Level { get; set; }
+        public bool choice { get; set; }
+
+        public Class Class { get; set; }
+        public string Feature { get; set; }
     }
 
     public class Ability
@@ -100,13 +121,13 @@ namespace CharacterRoller.Models
                 {
                     returnValue += this.parentCharacter.Proficiency;
                 }
-                foreach (KeyValuePair<string, int> improvement in this.parentCharacter.race.abilityScoreImprovements)
-                {
-                    if (improvement.Key == this.ToString())
-                    {
-                        returnValue += improvement.Value;
-                    }
-                }
+                //foreach (KeyValuePair<string, int> improvement in this.parentCharacter.race.race.abilityScoreImprovements)
+                //{
+                //    if (improvement.Key == this.ToString())
+                //    {
+                //        returnValue += improvement.Value;
+                //    }
+                //}
 
                 foreach (Dictionary<string, int> abilityScoreImprovement in this.parentCharacter.characterClass.abilityScoreImprovements)
                 {

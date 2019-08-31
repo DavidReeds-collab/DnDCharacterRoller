@@ -7,10 +7,10 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
-namespace CharacterRoller.Data.Migrations
+namespace CharacterRoller.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20190807072042_initial")]
+    [Migration("20190815085515_initial")]
     partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,6 +25,12 @@ namespace CharacterRoller.Data.Migrations
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd();
+
+                    b.Property<int>("BaseValue");
+
+                    b.Property<bool>("Proficient");
+
+                    b.Property<string>("parentCharacterId");
 
                     b.HasKey("Id");
 
@@ -88,7 +94,7 @@ namespace CharacterRoller.Data.Migrations
 
                     b.Property<string>("characterClassId");
 
-                    b.Property<string>("raceId");
+                    b.Property<string>("characterRaceId");
 
                     b.Property<string>("sleightOfHandId");
 
@@ -142,7 +148,7 @@ namespace CharacterRoller.Data.Migrations
 
                     b.HasIndex("characterClassId");
 
-                    b.HasIndex("raceId");
+                    b.HasIndex("characterRaceId");
 
                     b.HasIndex("sleightOfHandId");
 
@@ -159,14 +165,73 @@ namespace CharacterRoller.Data.Migrations
                     b.ToTable("Classes");
                 });
 
+            modelBuilder.Entity("CharacterRoller.Models.ClassFeature", b =>
+                {
+                    b.Property<string>("classFeatureId")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("ClassId");
+
+                    b.Property<string>("Feature");
+
+                    b.Property<int>("Level");
+
+                    b.Property<bool>("choice");
+
+                    b.HasKey("classFeatureId");
+
+                    b.HasIndex("ClassId");
+
+                    b.ToTable("ClassFeatures");
+                });
+
             modelBuilder.Entity("CharacterRoller.Models.Race", b =>
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd();
 
+                    b.Property<int>("CharismaImprovement");
+
+                    b.Property<int>("ConstitutionImprovement");
+
+                    b.Property<int>("DexterityImprovement");
+
+                    b.Property<int>("IntelligenceImprovement");
+
+                    b.Property<int>("StrenghtImprovement");
+
+                    b.Property<int>("WisdomImprovement");
+
                     b.HasKey("Id");
 
                     b.ToTable("Races");
+
+                    b.HasData(
+                        new { Id = "Human", CharismaImprovement = 1, ConstitutionImprovement = 1, DexterityImprovement = 1, IntelligenceImprovement = 1, StrenghtImprovement = 1, WisdomImprovement = 1 }
+                    );
+                });
+
+            modelBuilder.Entity("CharacterRoller.Models.RaceFeature", b =>
+                {
+                    b.Property<string>("raceFeatureId")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Feature");
+
+                    b.Property<string>("race");
+
+                    b.HasKey("raceFeatureId");
+
+                    b.ToTable("RaceFeatures");
+
+                    b.HasData(
+                        new { raceFeatureId = "HumanAbilities", Feature = "Ability Score Increase: Your Ability Scores each increase by 1.", race = "Human" },
+                        new { raceFeatureId = "HumanAge", Feature = "Age: Humans reach Adulthood in their late teens and live less than a century.", race = "Human" },
+                        new { raceFeatureId = "HumanAlignment", Feature = "Alignment: Humans tend toward no particular Alignment. The best and the worst are found among them.", race = "Human" },
+                        new { raceFeatureId = "HumanSize", Feature = "Size: Humans vary widely in height and build, from barely 5 feet to well over 6 feet tall. Regardless of your position in that range, your size is Medium.", race = "Human" },
+                        new { raceFeatureId = "HumanSpeed", Feature = "Speed: Your base walking speed is 30 feet.", race = "Human" },
+                        new { raceFeatureId = "HumanLanguages", Feature = "Languages: You can speak, read, and write Common and one extra language of your choice. Humans typically learn the Languages of other peoples they deal with, including obscure dialects. They are fond of sprinkling their Speech with words borrowed from other tongues: Orc curses, Elvish musical expressions, Dwarvish Military phrases, and so on.", race = "Human" }
+                    );
                 });
 
             modelBuilder.Entity("CharacterRoller.Models.Skill", b =>
@@ -179,6 +244,8 @@ namespace CharacterRoller.Data.Migrations
                     b.Property<bool>("Proficient");
 
                     b.Property<string>("parentAbilityId");
+
+                    b.Property<string>("parentCharacterId");
 
                     b.HasKey("Id");
 
@@ -450,13 +517,20 @@ namespace CharacterRoller.Data.Migrations
                         .WithMany()
                         .HasForeignKey("characterClassId");
 
-                    b.HasOne("CharacterRoller.Models.Race", "race")
+                    b.HasOne("CharacterRoller.Models.Race", "characterRace")
                         .WithMany()
-                        .HasForeignKey("raceId");
+                        .HasForeignKey("characterRaceId");
 
                     b.HasOne("CharacterRoller.Models.Skill", "sleightOfHand")
                         .WithMany()
                         .HasForeignKey("sleightOfHandId");
+                });
+
+            modelBuilder.Entity("CharacterRoller.Models.ClassFeature", b =>
+                {
+                    b.HasOne("CharacterRoller.Models.Class", "Class")
+                        .WithMany()
+                        .HasForeignKey("ClassId");
                 });
 
             modelBuilder.Entity("CharacterRoller.Models.Skill", b =>
