@@ -11,11 +11,53 @@
     <hr />
     <dl class="dl-horizontal">
         <dt>
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+        <dt>
             @Html.DisplayNameFor(model => model.Level)
         </dt>
         <dd>
             @Html.DisplayFor(model => model.Level)
         </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.skills)
+        </dt>
+        <dd>
+            @foreach (var item in Model.skills)
+            {
+                <b>@item.Id</b><p>, @item.value</p>
+            }
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.characterRace.Name)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.characterRace.Name)
+        </dd>
+        @foreach (var item in Model.characterRace.raceFeatures)
+        {
+            <dt>
+                <p>@item.raceFeatureName</p>
+            </dt>
+            <dd>
+                <p>@item.Feature</p>
+            </dd>
+        }
+        <dt>
+            @Html.DisplayNameFor(model => model.characterClass.Name)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.characterClass.Name)
+        </dd>
+        @foreach (var item in Model.characterClass.classFeatures)
+        {
+            <dt>
+                <p>@item.Feature</p>
+            </dt>
+        }
         <dt>
             @Html.DisplayNameFor(model => model.Experience)
         </dt>

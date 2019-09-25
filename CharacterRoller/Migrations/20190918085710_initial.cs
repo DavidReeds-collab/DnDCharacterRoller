@@ -15,7 +15,7 @@ namespace CharacterRoller.Migrations
                     Id = table.Column<string>(nullable: false),
                     Proficient = table.Column<bool>(nullable: false),
                     BaseValue = table.Column<int>(nullable: false),
-                    parentCharacterId = table.Column<string>(nullable: true)
+                    parentCharacterId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -65,7 +65,8 @@ namespace CharacterRoller.Migrations
                 name: "Classes",
                 columns: table => new
                 {
-                    Id = table.Column<string>(nullable: false)
+                    Id = table.Column<string>(nullable: false),
+                    Name = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -76,6 +77,7 @@ namespace CharacterRoller.Migrations
                 name: "RaceFeatures",
                 columns: table => new
                 {
+                    raceFeatureName = table.Column<string>(nullable: true),
                     raceFeatureId = table.Column<string>(nullable: false),
                     race = table.Column<string>(nullable: true),
                     Feature = table.Column<string>(nullable: true)
@@ -90,6 +92,7 @@ namespace CharacterRoller.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(nullable: false),
+                    Name = table.Column<string>(nullable: true),
                     StrenghtImprovement = table.Column<int>(nullable: false),
                     DexterityImprovement = table.Column<int>(nullable: false),
                     ConstitutionImprovement = table.Column<int>(nullable: false),
@@ -107,7 +110,7 @@ namespace CharacterRoller.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(nullable: false),
-                    parentCharacterId = table.Column<string>(nullable: true),
+                    parentCharacterId = table.Column<int>(nullable: false),
                     Proficient = table.Column<bool>(nullable: false),
                     Expertise = table.Column<bool>(nullable: false),
                     parentAbilityId = table.Column<string>(nullable: true)
@@ -254,7 +257,9 @@ namespace CharacterRoller.Migrations
                 name: "Characters",
                 columns: table => new
                 {
-                    Id = table.Column<string>(nullable: false),
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    Name = table.Column<string>(nullable: true),
                     Level = table.Column<int>(nullable: false),
                     Experience = table.Column<int>(nullable: false),
                     StrengthId = table.Column<string>(nullable: true),
@@ -446,22 +451,53 @@ namespace CharacterRoller.Migrations
                 });
 
             migrationBuilder.InsertData(
-                table: "RaceFeatures",
-                columns: new[] { "raceFeatureId", "Feature", "race" },
+                table: "Classes",
+                columns: new[] { "Id", "Name" },
                 values: new object[,]
                 {
-                    { "HumanAbilities", "Ability Score Increase: Your Ability Scores each increase by 1.", "Human" },
-                    { "HumanAge", "Age: Humans reach Adulthood in their late teens and live less than a century.", "Human" },
-                    { "HumanAlignment", "Alignment: Humans tend toward no particular Alignment. The best and the worst are found among them.", "Human" },
-                    { "HumanSize", "Size: Humans vary widely in height and build, from barely 5 feet to well over 6 feet tall. Regardless of your position in that range, your size is Medium.", "Human" },
-                    { "HumanSpeed", "Speed: Your base walking speed is 30 feet.", "Human" },
-                    { "HumanLanguages", "Languages: You can speak, read, and write Common and one extra language of your choice. Humans typically learn the Languages of other peoples they deal with, including obscure dialects. They are fond of sprinkling their Speech with words borrowed from other tongues: Orc curses, Elvish musical expressions, Dwarvish Military phrases, and so on.", "Human" }
+                    { "barbarian", "Barbarian" },
+                    { "wizard", "Wizard" },
+                    { "warlock", "Warlock" },
+                    { "rogue", "Rogue" },
+                    { "ranger", "Ranger" },
+                    { "paladin", "Paladin" },
+                    { "sorcerer", "Sorcerer" },
+                    { "fighter", "Fighter" },
+                    { "druid", "Druid" },
+                    { "cleric", "Cleric" },
+                    { "bard", "Bard" },
+                    { "monk", "Monk" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "RaceFeatures",
+                columns: new[] { "raceFeatureId", "Feature", "race", "raceFeatureName" },
+                values: new object[,]
+                {
+                    { "7", "Two different ability scores of your choice increase by 1.", "humanVariant", "Abilities" },
+                    { "12", "Humans vary widely in height and build, from barely 5 feet to well over 6 feet tall. Regardless of your position in that range, your size is Medium.", "humanVariant", "Size" },
+                    { "11", "Humans tend toward no particular Alignment. The best and the worst are found among them.", "humanVariant", "Alignment" },
+                    { "10", "Humans reach Adulthood in their late teens and live less than a century.", "humanVariant", "Age" },
+                    { "9", "You gain one Feat of your choice.", "humanVariant", "Feat" },
+                    { "8", "You gain proficiency in one skill of your choice.", "humanVariant", "Skills" },
+                    { "6", "You can speak, read, and write Common and one extra language of your choice. Humans typically learn the Languages of other peoples they deal with, including obscure dialects. They are fond of sprinkling their Speech with words borrowed from other tongues: Orc curses, Elvish musical expressions, Dwarvish Military phrases, and so on.", "human", "Languages" },
+                    { "14", "You can speak, read, and write Common and one extra language of your choice. Humans typically learn the Languages of other peoples they deal with, including obscure dialects. They are fond of sprinkling their Speech with words borrowed from other tongues: Orc curses, Elvish musical expressions, Dwarvish Military phrases, and so on.", "humanVariant", "Languages" },
+                    { "4", "Humans vary widely in height and build, from barely 5 feet to well over 6 feet tall. Regardless of your position in that range, your size is Medium.", "human", "Size" },
+                    { "3", "Humans tend toward no particular Alignment. The best and the worst are found among them.", "human", "Alignment" },
+                    { "2", "Humans reach Adulthood in their late teens and live less than a century.", "human", "Age" },
+                    { "1", "Your Ability Scores each increase by 1.", "human", "Abilities" },
+                    { "13", "Your base walking speed is 30 feet.", "humanVariant", "Speed" },
+                    { "5", "Your base walking speed is 30 feet.", "human", "Speed" }
                 });
 
             migrationBuilder.InsertData(
                 table: "Races",
-                columns: new[] { "Id", "CharismaImprovement", "ConstitutionImprovement", "DexterityImprovement", "IntelligenceImprovement", "StrenghtImprovement", "WisdomImprovement" },
-                values: new object[] { "Human", 1, 1, 1, 1, 1, 1 });
+                columns: new[] { "Id", "CharismaImprovement", "ConstitutionImprovement", "DexterityImprovement", "IntelligenceImprovement", "Name", "StrenghtImprovement", "WisdomImprovement" },
+                values: new object[,]
+                {
+                    { "human", 1, 1, 1, 1, "Human", 1, 1 },
+                    { "humanVariant", 0, 0, 0, 0, "Human (Variant)", 0, 0 }
+                });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",

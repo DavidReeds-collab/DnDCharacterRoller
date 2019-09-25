@@ -10,9 +10,13 @@ using CharacterRoller.Models;
 
 namespace CharacterRoller.Controllers
 {
+
+
     public class CharactersController : Controller
     {
         private readonly ApplicationDbContext _context;
+
+        public static Races racesMain;
 
         public CharactersController(ApplicationDbContext context)
         {
@@ -26,7 +30,7 @@ namespace CharacterRoller.Controllers
         }
 
         // GET: Characters/Details/5
-        public async Task<IActionResult> Details(string id)
+        public async Task<IActionResult> Details(int id)
         {
             if (id == null)
             {
@@ -40,13 +44,52 @@ namespace CharacterRoller.Controllers
                 return NotFound();
             }
 
+            character.characterRace = _context.Races.Where(r => r.Id == character.characterRaceId).FirstOrDefault();
+
+            character.characterRace.raceFeatures = _context.RaceFeatures.Where(rf => rf.race == character.characterRace.Id).ToList();
+
+            character.characterClass = _context.Classes.Where(c => c.Id == character.characterClassId).FirstOrDefault();
+
+            character.characterClass.classFeatures = _context.ClassFeatures.Where(a => a.Class == character.characterClass.Id).ToList();
+
             return View(character);
         }
 
         // GET: Characters/Create
         public IActionResult Create()
         {
+            ViewBag.races = FillRaceList();
+            ViewBag.classes = FillClassList();
+
             return View();
+        }
+
+        public List<SelectListItem> FillRaceList()
+        {
+            var list = new List<SelectListItem>();
+
+            var DataBaseLlist = _context.Races.ToList();
+
+            foreach (var item in DataBaseLlist)
+            {
+                list.Add(new SelectListItem { Text = item.Id.ToString(), Value = item.Id.ToString() });
+            }
+
+            return list;
+        }
+
+        public List<SelectListItem> FillClassList()
+        {
+            var list = new List<SelectListItem>();
+
+            var DataBaseLlist = _context.Classes.ToList();
+
+            foreach (var item in DataBaseLlist)
+            {
+                list.Add(new SelectListItem { Text = item.Id.ToString(), Value = item.Id.ToString() });
+            }
+
+            return list;
         }
 
         // POST: Characters/Create
@@ -54,8 +97,9 @@ namespace CharacterRoller.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Level,Experience, characterRaceId")] Character character)
+        public async Task<IActionResult> Create([Bind("Name,Level, characterClassId, characterRaceId")] Character character)
         {
+
             if (ModelState.IsValid)
             {
                 _context.Add(character);
@@ -86,7 +130,7 @@ namespace CharacterRoller.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("Id,Level,Experience")] Character character)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Level,Experience")] Character character)
         {
             if (id != character.Id)
             {
@@ -117,7 +161,7 @@ namespace CharacterRoller.Controllers
         }
 
         // GET: Characters/Delete/5
-        public async Task<IActionResult> Delete(string id)
+        public async Task<IActionResult> Delete(int id)
         {
             if (id == null)
             {
@@ -145,7 +189,7 @@ namespace CharacterRoller.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        private bool CharacterExists(string id)
+        private bool CharacterExists(int id)
         {
             return _context.Characters.Any(e => e.Id == id);
         }

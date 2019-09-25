@@ -1,16 +1,19 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Reflection;
 
 namespace CharacterRoller.Models
 {
     public class Character
     {
         [Key]
-        public string Id { get; set; }
+        public int Id { get; set; }
+        public string Name { get; set; }
         public int Level { get; set; }
         public int Experience { get; set; }
         public int Proficiency { get { return (int)MathF.Round(this.Level / 4) + 1; } }
@@ -43,13 +46,45 @@ namespace CharacterRoller.Models
         public Skill sleightOfHand { get; set; }
         public Skill Stealth { get; set; }
         public Skill Suvival { get; set; }
+        [NotMapped]
+        public List<Skill> skills
+        {
+            get
+            {
+                Type character = this.GetType();
+                IList<PropertyInfo> props = new List<PropertyInfo>(character.GetProperties());
+
+                List<Skill> returnlist = new List<Skill>();
+
+                returnlist.Add(this.Acrobatics);
+                returnlist.Add(this.animalHandling);
+                returnlist.Add(this.Arcana);
+                returnlist.Add(this.Athletics);
+                returnlist.Add(this.Deception);
+                returnlist.Add(this.History);
+                returnlist.Add(this.Insight);
+                returnlist.Add(this.Intimidation);
+                returnlist.Add(this.Investigation);
+                returnlist.Add(this.Medicine);
+                returnlist.Add(this.Nature);
+                returnlist.Add(this.Perception);
+                returnlist.Add(this.Performance);
+                returnlist.Add(this.Persuasion);
+                returnlist.Add(this.Religion);
+                returnlist.Add(this.sleightOfHand);
+                returnlist.Add(this.Stealth);
+                returnlist.Add(this.Suvival);
+                return returnlist;
+            }
+        }
         #endregion
 
         public Race characterRace { get; set; }
-
+        [Display(Name = "Race")]
         public string characterRaceId { get; set; }
 
-        public Class characterClass { get; set; } = new Class();
+        public Class characterClass { get; set; }
+        [Display(Name = "Class")]
         public string characterClassId { get; set; }
     }
 
@@ -57,6 +92,8 @@ namespace CharacterRoller.Models
     {
         [Key]
         public string Id { get; set; }
+        [Display(Name = "Race")]
+        public string Name { get; set; }
         public int StrenghtImprovement { get; set; } = 0;
         public int DexterityImprovement { get; set; } = 0;
         public int ConstitutionImprovement { get; set; } = 0;
@@ -70,28 +107,49 @@ namespace CharacterRoller.Models
 
         public Race()
         {
-            this.Id = this.ToString();
         }
     }
+
+    public class Races
+    {
+        public List<SelectListItem> races { get; set; }
+
+        public string id { get; set; }
+
+        public string Race { get; set; }
+    }
+
     public class RaceFeature
     {
-
-        public string raceFeatureId { get; set; }
+        [Display(Name = "Racial Feature")]
+        public string raceFeatureName { get; set; }
+        [Key]
+        public string raceFeatureId
+        {
+            get; set;
+        }
         public string race { get; set; }
         public string Feature { get; set; }
+
+
+        public RaceFeature()
+        {
+            raceFeatureId = this.race + this.raceFeatureName;
+        }
     }
 
     public class Class
     {
         [Key]
         public string Id { get; set; }
+        [Display(Name = "Class")]
+        public string Name { get; set; }
         public List<Dictionary<string, int>> abilityScoreImprovements = new List<Dictionary<string, int>>();
-        public List<ClassFeature> raceFeatures = new List<ClassFeature>();
+        public List<ClassFeature> classFeatures = new List<ClassFeature>();
         public List<Character> Characters = new List<Character>();
 
         public Class()
         {
-            this.Id = this.ToString();
         }
     }
 
@@ -101,7 +159,7 @@ namespace CharacterRoller.Models
         public int Level { get; set; }
         public bool choice { get; set; }
 
-        public Class Class { get; set; }
+        public string Class { get; set; }
         public string Feature { get; set; }
     }
 
@@ -145,7 +203,7 @@ namespace CharacterRoller.Models
 
         public int Bonus { get { return (int)MathF.Floor((this.Value - 10) / 2); } }
         private Character parentCharacter;
-        public string parentCharacterId { get { return this.parentCharacter.Id; } internal set { parentCharacterId = value; } }
+        public int parentCharacterId { get { return this.parentCharacter.Id; } internal set { parentCharacterId = value; } }
         public Ability()
         {
             this.Id = this.ToString();
@@ -166,7 +224,7 @@ namespace CharacterRoller.Models
         [Key]
         public string Id { get; set; }
         private Character parentCharacter;
-        public string parentCharacterId { get { return this.parentCharacter.Id; } internal set { parentCharacterId = value; } }
+        public int parentCharacterId { get { return this.parentCharacter.Id; } internal set { parentCharacterId = value; } }
         public bool Proficient { get; set; } = false;
         public bool Expertise { get; set; } = false;
 
@@ -253,7 +311,7 @@ namespace CharacterRoller.Models
                     throw new ArgumentOutOfRangeException();
             }
 
-            this.Id = this.ToString();
+            this.Id = this.parentCharacter.Id + this.ToString();
         }
     }
 }

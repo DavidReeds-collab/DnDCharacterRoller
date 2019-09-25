@@ -35,7 +35,7 @@ namespace CharacterRoller.Controllers
 
             foreach (var race in races)
             {
-                race.raceFeatures = _context.RaceFeatures.Where(R => R.race == race.Id).ToList();
+                race.raceFeatures = _context.RaceFeatures.Where(R => R.raceFeatureId == race.Id).ToList();
             }
 
             return races;

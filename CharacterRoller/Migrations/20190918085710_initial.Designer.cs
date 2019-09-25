@@ -10,14 +10,14 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CharacterRoller.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20190815110143_fourth")]
-    partial class fourth
+    [Migration("20190918085710_initial")]
+    partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "2.1.8-servicing-32085")
+                .HasAnnotation("ProductVersion", "2.1.11-servicing-32099")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
@@ -30,7 +30,7 @@ namespace CharacterRoller.Migrations
 
                     b.Property<bool>("Proficient");
 
-                    b.Property<string>("parentCharacterId");
+                    b.Property<int>("parentCharacterId");
 
                     b.HasKey("Id");
 
@@ -39,8 +39,9 @@ namespace CharacterRoller.Migrations
 
             modelBuilder.Entity("CharacterRoller.Models.Character", b =>
                 {
-                    b.Property<string>("Id")
-                        .ValueGeneratedOnAdd();
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("AcrobaticsId");
 
@@ -71,6 +72,8 @@ namespace CharacterRoller.Migrations
                     b.Property<int>("Level");
 
                     b.Property<string>("MedicineId");
+
+                    b.Property<string>("Name");
 
                     b.Property<string>("NatureId");
 
@@ -160,9 +163,26 @@ namespace CharacterRoller.Migrations
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd();
 
+                    b.Property<string>("Name");
+
                     b.HasKey("Id");
 
                     b.ToTable("Classes");
+
+                    b.HasData(
+                        new { Id = "barbarian", Name = "Barbarian" },
+                        new { Id = "bard", Name = "Bard" },
+                        new { Id = "cleric", Name = "Cleric" },
+                        new { Id = "druid", Name = "Druid" },
+                        new { Id = "fighter", Name = "Fighter" },
+                        new { Id = "monk", Name = "Monk" },
+                        new { Id = "paladin", Name = "Paladin" },
+                        new { Id = "ranger", Name = "Ranger" },
+                        new { Id = "rogue", Name = "Rogue" },
+                        new { Id = "sorcerer", Name = "Sorcerer" },
+                        new { Id = "warlock", Name = "Warlock" },
+                        new { Id = "wizard", Name = "Wizard" }
+                    );
                 });
 
             modelBuilder.Entity("CharacterRoller.Models.ClassFeature", b =>
@@ -198,6 +218,8 @@ namespace CharacterRoller.Migrations
 
                     b.Property<int>("IntelligenceImprovement");
 
+                    b.Property<string>("Name");
+
                     b.Property<int>("StrenghtImprovement");
 
                     b.Property<int>("WisdomImprovement");
@@ -207,8 +229,8 @@ namespace CharacterRoller.Migrations
                     b.ToTable("Races");
 
                     b.HasData(
-                        new { Id = "Human", CharismaImprovement = 1, ConstitutionImprovement = 1, DexterityImprovement = 1, IntelligenceImprovement = 1, StrenghtImprovement = 1, WisdomImprovement = 1 },
-                        new { Id = "Human(variant)", CharismaImprovement = 0, ConstitutionImprovement = 0, DexterityImprovement = 0, IntelligenceImprovement = 0, StrenghtImprovement = 0, WisdomImprovement = 0 }
+                        new { Id = "human", CharismaImprovement = 1, ConstitutionImprovement = 1, DexterityImprovement = 1, IntelligenceImprovement = 1, Name = "Human", StrenghtImprovement = 1, WisdomImprovement = 1 },
+                        new { Id = "humanVariant", CharismaImprovement = 0, ConstitutionImprovement = 0, DexterityImprovement = 0, IntelligenceImprovement = 0, Name = "Human (Variant)", StrenghtImprovement = 0, WisdomImprovement = 0 }
                     );
                 });
 
@@ -221,25 +243,27 @@ namespace CharacterRoller.Migrations
 
                     b.Property<string>("race");
 
+                    b.Property<string>("raceFeatureName");
+
                     b.HasKey("raceFeatureId");
 
                     b.ToTable("RaceFeatures");
 
                     b.HasData(
-                        new { raceFeatureId = "HumanAbilities", Feature = "Your Ability Scores each increase by 1.", race = "Human" },
-                        new { raceFeatureId = "HumanAge", Feature = "Humans reach Adulthood in their late teens and live less than a century.", race = "Human" },
-                        new { raceFeatureId = "HumanAlignment", Feature = "Humans tend toward no particular Alignment. The best and the worst are found among them.", race = "Human" },
-                        new { raceFeatureId = "HumanSize", Feature = "Humans vary widely in height and build, from barely 5 feet to well over 6 feet tall. Regardless of your position in that range, your size is Medium.", race = "Human" },
-                        new { raceFeatureId = "HumanSpeed", Feature = "Your base walking speed is 30 feet.", race = "Human" },
-                        new { raceFeatureId = "HumanLanguages", Feature = "You can speak, read, and write Common and one extra language of your choice. Humans typically learn the Languages of other peoples they deal with, including obscure dialects. They are fond of sprinkling their Speech with words borrowed from other tongues: Orc curses, Elvish musical expressions, Dwarvish Military phrases, and so on.", race = "Human" },
-                        new { raceFeatureId = "Human(variant)Abilities", Feature = "Two different ability scores of your choice increase by 1.", race = "Human(variant)" },
-                        new { raceFeatureId = "Human(variant)Skills", Feature = "You gain proficiency in one skill of your choice.", race = "Human(variant)" },
-                        new { raceFeatureId = "Human(variant)Feat", Feature = "You gain one Feat of your choice.", race = "Human(variant)" },
-                        new { raceFeatureId = "Human(variant)Age", Feature = "Humans reach Adulthood in their late teens and live less than a century.", race = "Human(variant)" },
-                        new { raceFeatureId = "Human(variant)Alignment", Feature = "Humans tend toward no particular Alignment. The best and the worst are found among them.", race = "Human(variant)" },
-                        new { raceFeatureId = "Human(variant)Size", Feature = "Humans vary widely in height and build, from barely 5 feet to well over 6 feet tall. Regardless of your position in that range, your size is Medium.", race = "Human(variant)" },
-                        new { raceFeatureId = "Human(variant)Speed", Feature = "Your base walking speed is 30 feet.", race = "Human(variant)" },
-                        new { raceFeatureId = "Human(variant)Languages", Feature = "You can speak, read, and write Common and one extra language of your choice. Humans typically learn the Languages of other peoples they deal with, including obscure dialects. They are fond of sprinkling their Speech with words borrowed from other tongues: Orc curses, Elvish musical expressions, Dwarvish Military phrases, and so on.", race = "Human(variant)" }
+                        new { raceFeatureId = "1", Feature = "Your Ability Scores each increase by 1.", race = "human", raceFeatureName = "Abilities" },
+                        new { raceFeatureId = "2", Feature = "Humans reach Adulthood in their late teens and live less than a century.", race = "human", raceFeatureName = "Age" },
+                        new { raceFeatureId = "3", Feature = "Humans tend toward no particular Alignment. The best and the worst are found among them.", race = "human", raceFeatureName = "Alignment" },
+                        new { raceFeatureId = "4", Feature = "Humans vary widely in height and build, from barely 5 feet to well over 6 feet tall. Regardless of your position in that range, your size is Medium.", race = "human", raceFeatureName = "Size" },
+                        new { raceFeatureId = "5", Feature = "Your base walking speed is 30 feet.", race = "human", raceFeatureName = "Speed" },
+                        new { raceFeatureId = "6", Feature = "You can speak, read, and write Common and one extra language of your choice. Humans typically learn the Languages of other peoples they deal with, including obscure dialects. They are fond of sprinkling their Speech with words borrowed from other tongues: Orc curses, Elvish musical expressions, Dwarvish Military phrases, and so on.", race = "human", raceFeatureName = "Languages" },
+                        new { raceFeatureId = "7", Feature = "Two different ability scores of your choice increase by 1.", race = "humanVariant", raceFeatureName = "Abilities" },
+                        new { raceFeatureId = "8", Feature = "You gain proficiency in one skill of your choice.", race = "humanVariant", raceFeatureName = "Skills" },
+                        new { raceFeatureId = "9", Feature = "You gain one Feat of your choice.", race = "humanVariant", raceFeatureName = "Feat" },
+                        new { raceFeatureId = "10", Feature = "Humans reach Adulthood in their late teens and live less than a century.", race = "humanVariant", raceFeatureName = "Age" },
+                        new { raceFeatureId = "11", Feature = "Humans tend toward no particular Alignment. The best and the worst are found among them.", race = "humanVariant", raceFeatureName = "Alignment" },
+                        new { raceFeatureId = "12", Feature = "Humans vary widely in height and build, from barely 5 feet to well over 6 feet tall. Regardless of your position in that range, your size is Medium.", race = "humanVariant", raceFeatureName = "Size" },
+                        new { raceFeatureId = "13", Feature = "Your base walking speed is 30 feet.", race = "humanVariant", raceFeatureName = "Speed" },
+                        new { raceFeatureId = "14", Feature = "You can speak, read, and write Common and one extra language of your choice. Humans typically learn the Languages of other peoples they deal with, including obscure dialects. They are fond of sprinkling their Speech with words borrowed from other tongues: Orc curses, Elvish musical expressions, Dwarvish Military phrases, and so on.", race = "humanVariant", raceFeatureName = "Languages" }
                     );
                 });
 
@@ -254,7 +278,7 @@ namespace CharacterRoller.Migrations
 
                     b.Property<string>("parentAbilityId");
 
-                    b.Property<string>("parentCharacterId");
+                    b.Property<int>("parentCharacterId");
 
                     b.HasKey("Id");
 
