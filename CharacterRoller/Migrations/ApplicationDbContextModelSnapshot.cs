@@ -19,139 +19,43 @@ namespace CharacterRoller.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("CharacterRoller.Models.Ability", b =>
-                {
-                    b.Property<string>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<int>("BaseValue");
-
-                    b.Property<bool>("Proficient");
-
-                    b.Property<int>("parentCharacterId");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Abilities");
-                });
-
             modelBuilder.Entity("CharacterRoller.Models.Character", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("AcrobaticsId");
+                    b.Property<int>("CharismaBase");
 
-                    b.Property<string>("ArcanaId");
+                    b.Property<int>("ConstitutionBase");
 
-                    b.Property<string>("AthleticsId");
-
-                    b.Property<string>("CharismaId");
-
-                    b.Property<string>("ConstitutionId");
-
-                    b.Property<string>("DeceptionId");
-
-                    b.Property<string>("DexterityId");
+                    b.Property<int>("DexterityBase");
 
                     b.Property<int>("Experience");
 
-                    b.Property<string>("HistoryId");
+                    b.Property<string>("Expertises");
 
-                    b.Property<string>("InsightId");
-
-                    b.Property<string>("IntelligenceId");
-
-                    b.Property<string>("IntimidationId");
-
-                    b.Property<string>("InvestigationId");
+                    b.Property<int>("IntelligenceBase");
 
                     b.Property<int>("Level");
 
-                    b.Property<string>("MedicineId");
-
                     b.Property<string>("Name");
 
-                    b.Property<string>("NatureId");
+                    b.Property<string>("Proficiencies");
 
-                    b.Property<string>("PerceptionId");
+                    b.Property<int>("StrenghtBase");
 
-                    b.Property<string>("PerformanceId");
-
-                    b.Property<string>("PersuasionId");
-
-                    b.Property<string>("ReligionId");
-
-                    b.Property<string>("StealthId");
-
-                    b.Property<string>("StrengthId");
-
-                    b.Property<string>("SuvivalId");
-
-                    b.Property<string>("WisdomId");
-
-                    b.Property<string>("animalHandlingId");
+                    b.Property<int>("WisdomBase");
 
                     b.Property<string>("characterClassId");
 
                     b.Property<string>("characterRaceId");
 
-                    b.Property<string>("sleightOfHandId");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("AcrobaticsId");
-
-                    b.HasIndex("ArcanaId");
-
-                    b.HasIndex("AthleticsId");
-
-                    b.HasIndex("CharismaId");
-
-                    b.HasIndex("ConstitutionId");
-
-                    b.HasIndex("DeceptionId");
-
-                    b.HasIndex("DexterityId");
-
-                    b.HasIndex("HistoryId");
-
-                    b.HasIndex("InsightId");
-
-                    b.HasIndex("IntelligenceId");
-
-                    b.HasIndex("IntimidationId");
-
-                    b.HasIndex("InvestigationId");
-
-                    b.HasIndex("MedicineId");
-
-                    b.HasIndex("NatureId");
-
-                    b.HasIndex("PerceptionId");
-
-                    b.HasIndex("PerformanceId");
-
-                    b.HasIndex("PersuasionId");
-
-                    b.HasIndex("ReligionId");
-
-                    b.HasIndex("StealthId");
-
-                    b.HasIndex("StrengthId");
-
-                    b.HasIndex("SuvivalId");
-
-                    b.HasIndex("WisdomId");
-
-                    b.HasIndex("animalHandlingId");
 
                     b.HasIndex("characterClassId");
 
                     b.HasIndex("characterRaceId");
-
-                    b.HasIndex("sleightOfHandId");
 
                     b.ToTable("Characters");
                 });
@@ -160,6 +64,8 @@ namespace CharacterRoller.Migrations
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd();
+
+                    b.Property<string>("AbilityScoreImprovements");
 
                     b.Property<string>("Name");
 
@@ -206,27 +112,17 @@ namespace CharacterRoller.Migrations
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<int>("CharismaImprovement");
-
-                    b.Property<int>("ConstitutionImprovement");
-
-                    b.Property<int>("DexterityImprovement");
-
-                    b.Property<int>("IntelligenceImprovement");
+                    b.Property<string>("AbilityScoreImprovements");
 
                     b.Property<string>("Name");
-
-                    b.Property<int>("StrenghtImprovement");
-
-                    b.Property<int>("WisdomImprovement");
 
                     b.HasKey("Id");
 
                     b.ToTable("Races");
 
                     b.HasData(
-                        new { Id = "human", CharismaImprovement = 1, ConstitutionImprovement = 1, DexterityImprovement = 1, IntelligenceImprovement = 1, Name = "Human", StrenghtImprovement = 1, WisdomImprovement = 1 },
-                        new { Id = "humanVariant", CharismaImprovement = 0, ConstitutionImprovement = 0, DexterityImprovement = 0, IntelligenceImprovement = 0, Name = "Human (Variant)", StrenghtImprovement = 0, WisdomImprovement = 0 }
+                        new { Id = "human", AbilityScoreImprovements = "Strenght_1_Racial|Dexterity_1_Racial|Constitution_1_Racial|Intelligence_1_Racial|Wisdom_1_Racial|Charisma_1_Racial", Name = "Human" },
+                        new { Id = "humanVariant", Name = "Human (Variant)" }
                     );
                 });
 
@@ -261,26 +157,6 @@ namespace CharacterRoller.Migrations
                         new { raceFeatureId = "13", Feature = "Your base walking speed is 30 feet.", race = "humanVariant", raceFeatureName = "Speed" },
                         new { raceFeatureId = "", Feature = "You can speak, read, and write Common and one extra language of your choice. Humans typically learn the Languages of other peoples they deal with, including obscure dialects. They are fond of sprinkling their Speech with words borrowed from other tongues: Orc curses, Elvish musical expressions, Dwarvish Military phrases, and so on.", race = "humanVariant", raceFeatureName = "Languages" }
                     );
-                });
-
-            modelBuilder.Entity("CharacterRoller.Models.Skill", b =>
-                {
-                    b.Property<string>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<bool>("Expertise");
-
-                    b.Property<bool>("Proficient");
-
-                    b.Property<string>("parentAbilityId");
-
-                    b.Property<int>("parentCharacterId");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("parentAbilityId");
-
-                    b.ToTable("Skills");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -450,98 +326,6 @@ namespace CharacterRoller.Migrations
 
             modelBuilder.Entity("CharacterRoller.Models.Character", b =>
                 {
-                    b.HasOne("CharacterRoller.Models.Skill", "Acrobatics")
-                        .WithMany()
-                        .HasForeignKey("AcrobaticsId");
-
-                    b.HasOne("CharacterRoller.Models.Skill", "Arcana")
-                        .WithMany()
-                        .HasForeignKey("ArcanaId");
-
-                    b.HasOne("CharacterRoller.Models.Skill", "Athletics")
-                        .WithMany()
-                        .HasForeignKey("AthleticsId");
-
-                    b.HasOne("CharacterRoller.Models.Ability", "Charisma")
-                        .WithMany()
-                        .HasForeignKey("CharismaId");
-
-                    b.HasOne("CharacterRoller.Models.Ability", "Constitution")
-                        .WithMany()
-                        .HasForeignKey("ConstitutionId");
-
-                    b.HasOne("CharacterRoller.Models.Skill", "Deception")
-                        .WithMany()
-                        .HasForeignKey("DeceptionId");
-
-                    b.HasOne("CharacterRoller.Models.Ability", "Dexterity")
-                        .WithMany()
-                        .HasForeignKey("DexterityId");
-
-                    b.HasOne("CharacterRoller.Models.Skill", "History")
-                        .WithMany()
-                        .HasForeignKey("HistoryId");
-
-                    b.HasOne("CharacterRoller.Models.Skill", "Insight")
-                        .WithMany()
-                        .HasForeignKey("InsightId");
-
-                    b.HasOne("CharacterRoller.Models.Ability", "Intelligence")
-                        .WithMany()
-                        .HasForeignKey("IntelligenceId");
-
-                    b.HasOne("CharacterRoller.Models.Skill", "Intimidation")
-                        .WithMany()
-                        .HasForeignKey("IntimidationId");
-
-                    b.HasOne("CharacterRoller.Models.Skill", "Investigation")
-                        .WithMany()
-                        .HasForeignKey("InvestigationId");
-
-                    b.HasOne("CharacterRoller.Models.Skill", "Medicine")
-                        .WithMany()
-                        .HasForeignKey("MedicineId");
-
-                    b.HasOne("CharacterRoller.Models.Skill", "Nature")
-                        .WithMany()
-                        .HasForeignKey("NatureId");
-
-                    b.HasOne("CharacterRoller.Models.Skill", "Perception")
-                        .WithMany()
-                        .HasForeignKey("PerceptionId");
-
-                    b.HasOne("CharacterRoller.Models.Skill", "Performance")
-                        .WithMany()
-                        .HasForeignKey("PerformanceId");
-
-                    b.HasOne("CharacterRoller.Models.Skill", "Persuasion")
-                        .WithMany()
-                        .HasForeignKey("PersuasionId");
-
-                    b.HasOne("CharacterRoller.Models.Skill", "Religion")
-                        .WithMany()
-                        .HasForeignKey("ReligionId");
-
-                    b.HasOne("CharacterRoller.Models.Skill", "Stealth")
-                        .WithMany()
-                        .HasForeignKey("StealthId");
-
-                    b.HasOne("CharacterRoller.Models.Ability", "Strength")
-                        .WithMany()
-                        .HasForeignKey("StrengthId");
-
-                    b.HasOne("CharacterRoller.Models.Skill", "Suvival")
-                        .WithMany()
-                        .HasForeignKey("SuvivalId");
-
-                    b.HasOne("CharacterRoller.Models.Ability", "Wisdom")
-                        .WithMany()
-                        .HasForeignKey("WisdomId");
-
-                    b.HasOne("CharacterRoller.Models.Skill", "animalHandling")
-                        .WithMany()
-                        .HasForeignKey("animalHandlingId");
-
                     b.HasOne("CharacterRoller.Models.Class", "characterClass")
                         .WithMany()
                         .HasForeignKey("characterClassId");
@@ -549,17 +333,6 @@ namespace CharacterRoller.Migrations
                     b.HasOne("CharacterRoller.Models.Race", "characterRace")
                         .WithMany()
                         .HasForeignKey("characterRaceId");
-
-                    b.HasOne("CharacterRoller.Models.Skill", "sleightOfHand")
-                        .WithMany()
-                        .HasForeignKey("sleightOfHandId");
-                });
-
-            modelBuilder.Entity("CharacterRoller.Models.Skill", b =>
-                {
-                    b.HasOne("CharacterRoller.Models.Ability", "parentAbility")
-                        .WithMany()
-                        .HasForeignKey("parentAbilityId");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

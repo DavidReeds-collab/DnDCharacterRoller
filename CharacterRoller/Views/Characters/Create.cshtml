@@ -24,6 +24,36 @@
                 <span asp-validation-for="Level" class="text-danger"></span>
             </div>
             <div class="form-group">
+                <label asp-for="StrenghtBase" class="control-label"></label>
+                <input asp-for="StrenghtBase" class="form-control" />
+                <span asp-validation-for="StrenghtBase" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DexterityBase" class="control-label"></label>
+                <input asp-for="DexterityBase" class="form-control" />
+                <span asp-validation-for="DexterityBase" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ConstitutionBase" class="control-label"></label>
+                <input asp-for="ConstitutionBase" class="form-control" />
+                <span asp-validation-for="ConstitutionBase" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="IntelligenceBase" class="control-label"></label>
+                <input asp-for="IntelligenceBase" class="form-control" />
+                <span asp-validation-for="IntelligenceBase" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="WisdomBase" class="control-label"></label>
+                <input asp-for="WisdomBase" class="form-control" />
+                <span asp-validation-for="WisdomBase" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="CharismaBase" class="control-label"></label>
+                <input asp-for="CharismaBase" class="form-control" />
+                <span asp-validation-for="CharismaBase" class="text-danger"></span>
+            </div>
+            <div class="form-group">
                 <label asp-for="characterRaceId" class="control-label"></label>
                 @Html.DropDownListFor(m => m.characterRaceId, new SelectList(ViewBag.races, "Text", "Value"), "Please select race", new { @id = "characterRaceId" })
                 <span asp-validation-for="characterRaceId" class="text-danger"></span>

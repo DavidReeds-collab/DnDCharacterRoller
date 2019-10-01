@@ -10,6 +10,7 @@
     <h4>Character</h4>
     <hr />
     <dl class="dl-horizontal">
+        <h3>Base Info</h3>
         <dt>
             @Html.DisplayNameFor(model => model.Name)
         </dt>
@@ -23,13 +24,10 @@
             @Html.DisplayFor(model => model.Level)
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.skills)
+            @Html.DisplayNameFor(model => model.Proficiency)
         </dt>
         <dd>
-            @foreach (var item in Model.skills)
-            {
-                <b>@item.Id</b><p>, @item.value</p>
-            }
+            @Html.DisplayFor(model => model.Proficiency)
         </dd>
         <dt>
             @Html.DisplayNameFor(model => model.characterRace.Name)
@@ -37,6 +35,30 @@
         <dd>
             @Html.DisplayFor(model => model.characterRace.Name)
         </dd>
+        <h3>Ability Scores</h3>
+        @foreach (var AbilityScore in Model.AbilityScoreList)
+        {
+            <dt>
+                <p>@AbilityScore.Key</p>
+            </dt>
+            <dd>
+                <p>@AbilityScore.Value</p>
+            </dd>
+        }
+        <h3>Skills</h3>
+        @foreach (var skill in Model.SkillList)
+        {
+            <dt>
+                <p>@skill.Key</p>
+            </dt>
+            <dd>
+                @if (skill.Value > 0)
+                {<p>+@skill.Value</p>}
+                @if (skill.Value < 1)
+                {<p>@skill.Value</p>}
+            </dd>
+        }
+        <h3>Racial Features</h3>
         @foreach (var item in Model.characterRace.raceFeatures)
         {
             <dt>
@@ -52,6 +74,7 @@
         <dd>
             @Html.DisplayFor(model => model.characterClass.Name)
         </dd>
+        <h3>Class Features</h3>
         @foreach (var item in Model.characterClass.classFeatures)
         {
             <dt>

@@ -46,7 +46,7 @@ namespace CharacterRoller.Controllers
 
             character.characterRace = _context.Races.Where(r => r.Id == character.characterRaceId).FirstOrDefault();
 
-            character.characterRace.raceFeatures = _context.RaceFeatures.Where(rf => rf.race == character.characterRace.Id).ToList();
+            character.characterRace.raceFeatures = _context.RaceFeatures.Where(rf => rf.race == character.characterRace.Id).ToList(); 
 
             character.characterClass = _context.Classes.Where(c => c.Id == character.characterClassId).FirstOrDefault();
 
@@ -97,7 +97,7 @@ namespace CharacterRoller.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Name,Level, characterClassId, characterRaceId")] Character character)
+        public async Task<IActionResult> Create([Bind("Name,Level,StrenghtBase,DexterityBase,ConstitutionBase,IntelligenceBase,WisdomBase,CharismaBase, characterClassId, characterRaceId")] Character character)
         {
 
             if (ModelState.IsValid)
@@ -106,6 +106,9 @@ namespace CharacterRoller.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+
+
+
             return View(character);
         }
 

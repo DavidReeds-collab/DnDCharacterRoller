@@ -30,12 +30,7 @@ namespace CharacterRoller.Data
             {
                 Id = "human",
                 Name = "Human",
-                StrenghtImprovement = 1,
-                DexterityImprovement = 1,
-                ConstitutionImprovement = 1,
-                WisdomImprovement = 1,
-                IntelligenceImprovement = 1,
-                CharismaImprovement = 1
+                AbilityScoreImprovements = "Strenght_1_Racial|Dexterity_1_Racial|Constitution_1_Racial|Intelligence_1_Racial|Wisdom_1_Racial|Charisma_1_Racial",
             });
 
             modelBuilder.Entity<RaceFeature>().HasData(new RaceFeature()
@@ -236,8 +231,6 @@ namespace CharacterRoller.Data
         public DbSet<CharacterRoller.Models.Character> Characters { get; set; }
         public DbSet<CharacterRoller.Models.Race> Races { get; set; }
         public DbSet<CharacterRoller.Models.Class> Classes { get; set; }
-        public DbSet<CharacterRoller.Models.Skill> Skills { get; set; }
-        public DbSet<CharacterRoller.Models.Ability> Abilities { get; set; }
         public DbSet<CharacterRoller.Models.RaceFeature> RaceFeatures { get; set; }
         public DbSet<CharacterRoller.Models.ClassFeature> ClassFeatures { get; set; }
 

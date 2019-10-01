@@ -16,67 +16,439 @@ namespace CharacterRoller.Models
         public string Name { get; set; }
         public int Level { get; set; }
         public int Experience { get; set; }
-        public int Proficiency { get { return (int)MathF.Round(this.Level / 4) + 1; } }
+        public int Proficiency { get { return (int)(1 + MathF.Ceiling(this.Level / 4)); } }
+        
+        public string Proficiencies { get; set; } = "";
+
+        public string Expertises { get; set; } = "";
 
         #region Ability Scores
-        public Ability Strength { get; set; }
-        public Ability Dexterity { get; set; }
-        public Ability Constitution { get; set; }
-        public Ability Intelligence { get; set; }
-        public Ability Wisdom { get; set; }
-        public Ability Charisma { get; set; }
-        #endregion
-
-        #region Skills
-        public Skill Acrobatics { get; set; }
-        public Skill animalHandling { get; set; }
-        public Skill Arcana { get; set; }
-        public Skill Athletics { get; set; }
-        public Skill Deception { get; set; }
-        public Skill History { get; set; }
-        public Skill Insight { get; set; }
-        public Skill Intimidation { get; set; }
-        public Skill Investigation { get; set; }
-        public Skill Medicine { get; set; }
-        public Skill Nature { get; set; }
-        public Skill Perception { get; set; }
-        public Skill Performance { get; set; }
-        public Skill Persuasion { get; set; }
-        public Skill Religion { get; set; }
-        public Skill sleightOfHand { get; set; }
-        public Skill Stealth { get; set; }
-        public Skill Suvival { get; set; }
         [NotMapped]
-        public List<Skill> skills
+        public string AbilityScoreImprovements { get
+            {
+                if(this.characterRace != null && this.characterClass != null)
+                {
+                    return this.characterRace.AbilityScoreImprovements + "|" + this.characterClass.AbilityScoreImprovements;
+                }
+                else
+                {
+                    return "";
+                }
+
+            } }
+        [NotMapped]
+        public Dictionary<string, int> AbilityScoreList { get
+            {
+                return new Dictionary<string, int>() {
+                    { "Strenght", this.Strenght},
+                    { "Dexterity", this.Dexterity},
+                    { "Constitution", this.Constitution},
+                    { "Intelligence", this.Intelligence },
+                    { "Wisdom", this.Wisdom },
+                    { "Charisma", this.Charisma }
+                };
+
+            } }
+
+        public int StrenghtBase { get; set; } = 10;
+        [NotMapped]
+        public int Strenght { get
+            {
+                return this.StrenghtBase + AbilityScoreImprovementCalculator("Strenght");
+            } }
+        [NotMapped]
+        public int StrenghtBonus { get { return (int)Math.Floor((double)(this.Strenght - 10) / 2.0); }  }
+        public int DexterityBase { get; set; } = 10;
+        [NotMapped]
+        public int Dexterity
         {
             get
             {
-                Type character = this.GetType();
-                IList<PropertyInfo> props = new List<PropertyInfo>(character.GetProperties());
-
-                List<Skill> returnlist = new List<Skill>();
-
-                returnlist.Add(this.Acrobatics);
-                returnlist.Add(this.animalHandling);
-                returnlist.Add(this.Arcana);
-                returnlist.Add(this.Athletics);
-                returnlist.Add(this.Deception);
-                returnlist.Add(this.History);
-                returnlist.Add(this.Insight);
-                returnlist.Add(this.Intimidation);
-                returnlist.Add(this.Investigation);
-                returnlist.Add(this.Medicine);
-                returnlist.Add(this.Nature);
-                returnlist.Add(this.Perception);
-                returnlist.Add(this.Performance);
-                returnlist.Add(this.Persuasion);
-                returnlist.Add(this.Religion);
-                returnlist.Add(this.sleightOfHand);
-                returnlist.Add(this.Stealth);
-                returnlist.Add(this.Suvival);
-                return returnlist;
+                return this.DexterityBase + AbilityScoreImprovementCalculator("Dexterity");
             }
         }
+        [NotMapped]
+        public int DexterityBonus { get { return (int)Math.Floor((double)(this.Dexterity - 10) / 2.0); } }
+        public int ConstitutionBase { get; set; } = 10;
+        [NotMapped]
+        public int Constitution
+        {
+            get
+            {
+                return this.ConstitutionBase + AbilityScoreImprovementCalculator("Constitution");
+            }
+        }
+        [NotMapped]
+        public int ConstitutionBonus { get { return (int)Math.Floor((double)(this.Constitution - 10) / 2.0); } }
+        public int IntelligenceBase { get; set; } = 10;
+        [NotMapped]
+        public int Intelligence
+        {
+            get
+            {
+                return this.IntelligenceBase + AbilityScoreImprovementCalculator("Intelligence");
+            }
+        }
+        [NotMapped]
+        public int IntelligenceBonus { get { return (int)Math.Floor((double)(this.Intelligence - 10) / 2.0); } }
+        public int WisdomBase { get; set; } = 10;
+        [NotMapped]
+        public int Wisdom
+        {
+            get
+            {
+                return this.WisdomBase + AbilityScoreImprovementCalculator("Wisdom");
+            }
+        }
+        [NotMapped]
+        public int WisdomBonus { get { return (int)Math.Floor((double)(this.Wisdom - 10) / 2.0); } }
+        public int CharismaBase { get; set; } = 10;
+        [NotMapped]
+        public int Charisma
+        {
+            get
+            {
+                return this.CharismaBase + AbilityScoreImprovementCalculator("Charisma");
+            }
+        }
+        [NotMapped]
+        public int CharismaBonus { get { return (int)Math.Floor((double)(this.Charisma - 10) / 2.0); } }
+        #endregion
+
+        #region Skills
+        [NotMapped]
+        public Dictionary<string, int> SkillList
+        {
+            get
+            {
+                return new Dictionary<string, int>() {
+                    { "Acrobatics", this.AcrobaticsModifier},
+                    { "Animal Handling", this.AnimalHandlingModifier},
+                    { "Arcana", this.ArcanaModifier},
+                    { "Athletics", this.AthleticsModifier},
+                    { "Deception", this.DeceptionModifier},
+                    { "History", this.HistoryModifier},
+                    { "Insight", this.InsightModifier},
+                    { "Intimidation", this.IntimidationModifier},
+                    { "Investigation", this.InvestigationModifier},
+                    { "Medicine", this.MedicineModifier},
+                    { "Nature", this.NatureModifier},
+                    { "Perception", this.PerceptionModifier},
+                    { "Performance", this.PerformanceModifier},
+                    { "Persuasion", this.PersuasionModifier},
+                    { "Religion", this.ReligionModifier},
+                    { "Sleight of hand", this.SleightOfHandModifier},
+                    { "Stealth", this.StealthModifier},
+                    { "Survival", this.SurvivalModifier}
+                };
+
+            }
+        }
+        [NotMapped]
+        public int AcrobaticsModifier
+        {
+            get
+            {
+                int returnValue = 0 + this.DexterityBonus;
+                if (this.Proficiencies.Contains("Acrobatics"))
+                {
+                    returnValue += this.Proficiency;
+                }
+                if (this.Expertises.Contains("Acrobatics"))
+                {
+                    returnValue += this.Proficiency;
+                }
+                return returnValue;
+            }
+        }
+        [NotMapped]
+        public int AnimalHandlingModifier
+        {
+            get
+            {
+                int returnValue = 0 + this.WisdomBonus;
+                if (this.Proficiencies.Contains("AnimalHandling"))
+                {
+                    returnValue += this.Proficiency;
+                }
+                if (this.Expertises.Contains("AnimalHandling"))
+                {
+                    returnValue += this.Proficiency;
+                }
+                return returnValue;
+            }
+        }
+        [NotMapped]
+        public int ArcanaModifier
+        {
+            get
+            {
+                int returnValue = 0 + this.IntelligenceBonus;
+                if (this.Proficiencies.Contains("Arcana"))
+                {
+                    returnValue += this.Proficiency;
+                }
+                if (this.Expertises.Contains("Arcana"))
+                {
+                    returnValue += this.Proficiency;
+                }
+                return returnValue;
+            }
+        }
+        [NotMapped]
+        public int AthleticsModifier { get {
+                int returnValue = 0 + this.StrenghtBonus;
+                if (this.Proficiencies.Contains("Athletics"))
+                {
+                    returnValue += this.Proficiency;
+                }
+                if (this.Expertises.Contains("Athletics"))
+                {
+                    returnValue += this.Proficiency;
+                }
+                return returnValue;
+            } }
+        [NotMapped]
+        public int DeceptionModifier
+        {
+            get
+            {
+                int returnValue = 0 + this.CharismaBonus;
+                if (this.Proficiencies.Contains("Deception"))
+                {
+                    returnValue += this.Proficiency;
+                }
+                if (this.Expertises.Contains("Deception"))
+                {
+                    returnValue += this.Proficiency;
+                }
+                return returnValue;
+            }
+        }
+        [NotMapped]
+        public int HistoryModifier
+        {
+            get
+            {
+                int returnValue = 0 + this.IntelligenceBonus;
+                if (this.Proficiencies.Contains("History"))
+                {
+                    returnValue += this.Proficiency;
+                }
+                if (this.Expertises.Contains("History"))
+                {
+                    returnValue += this.Proficiency;
+                }
+                return returnValue;
+            }
+        }
+        [NotMapped]
+        public int InsightModifier
+        {
+            get
+            {
+                int returnValue = 0 + this.WisdomBonus;
+                if (this.Proficiencies.Contains("Insight"))
+                {
+                    returnValue += this.Proficiency;
+                }
+                if (this.Expertises.Contains("Insight"))
+                {
+                    returnValue += this.Proficiency;
+                }
+                return returnValue;
+            }
+        }
+        [NotMapped]
+        public int IntimidationModifier
+        {
+            get
+            {
+                int returnValue = 0 + this.CharismaBonus;
+                if (this.Proficiencies.Contains("Intimidation"))
+                {
+                    returnValue += this.Proficiency;
+                }
+                if (this.Expertises.Contains("Intimidation"))
+                {
+                    returnValue += this.Proficiency;
+                }
+                return returnValue;
+            }
+        }
+        [NotMapped]
+        public int InvestigationModifier
+        {
+            get
+            {
+                int returnValue = 0 + this.IntelligenceBonus;
+                if (this.Proficiencies.Contains("Investigation"))
+                {
+                    returnValue += this.Proficiency;
+                }
+                if (this.Expertises.Contains("Investigation"))
+                {
+                    returnValue += this.Proficiency;
+                }
+                return returnValue;
+            }
+        }
+        [NotMapped]
+        public int MedicineModifier
+        {
+            get
+            {
+                int returnValue = 0 + this.WisdomBonus;
+                if (this.Proficiencies.Contains("Medicine"))
+                {
+                    returnValue += this.Proficiency;
+                }
+                if (this.Expertises.Contains("Medicine"))
+                {
+                    returnValue += this.Proficiency;
+                }
+                return returnValue;
+            }
+        }
+        [NotMapped]
+        public int NatureModifier
+        {
+            get
+            {
+                int returnValue = 0 + this.IntelligenceBonus;
+                if (this.Proficiencies.Contains("Nature"))
+                {
+                    returnValue += this.Proficiency;
+                }
+                if (this.Expertises.Contains("Nature"))
+                {
+                    returnValue += this.Proficiency;
+                }
+                return returnValue;
+            }
+        }
+        [NotMapped]
+        public int PerceptionModifier
+        {
+            get
+            {
+                int returnValue = 0 + this.WisdomBonus;
+                if (this.Proficiencies.Contains("Perception"))
+                {
+                    returnValue += this.Proficiency;
+                }
+                if (this.Expertises.Contains("Perception"))
+                {
+                    returnValue += this.Proficiency;
+                }
+                return returnValue;
+            }
+        }
+        [NotMapped]
+        public int PerformanceModifier
+        {
+            get
+            {
+                int returnValue = 0 + this.CharismaBonus;
+                if (this.Proficiencies.Contains("Performance"))
+                {
+                    returnValue += this.Proficiency;
+                }
+                if (this.Expertises.Contains("Performance"))
+                {
+                    returnValue += this.Proficiency;
+                }
+                return returnValue;
+            }
+        }
+        [NotMapped]
+        public int PersuasionModifier
+        {
+            get
+            {
+                int returnValue = 0 + this.CharismaBonus;
+                if (this.Proficiencies.Contains("Persuasion"))
+                {
+                    returnValue += this.Proficiency;
+                }
+                if (this.Expertises.Contains("Persuasion"))
+                {
+                    returnValue += this.Proficiency;
+                }
+                return returnValue;
+            }
+        }
+        [NotMapped]
+        public int ReligionModifier
+        {
+            get
+            {
+                int returnValue = 0 + this.IntelligenceBonus;
+                if (this.Proficiencies.Contains("Religion"))
+                {
+                    returnValue += this.Proficiency;
+                }
+                if (this.Expertises.Contains("Religion"))
+                {
+                    returnValue += this.Proficiency;
+                }
+                return returnValue;
+            }
+        }
+        [NotMapped]
+        public int SleightOfHandModifier
+        {
+            get
+            {
+                int returnValue = 0 + this.DexterityBonus;
+                if (this.Proficiencies.Contains("SleightOfHand"))
+                {
+                    returnValue += this.Proficiency;
+                }
+                if (this.Expertises.Contains("SleightOfHand"))
+                {
+                    returnValue += this.Proficiency;
+                }
+                return returnValue;
+            }
+        }
+        [NotMapped]
+        public int StealthModifier
+        {
+            get
+            {
+                int returnValue = 0 + this.DexterityBonus;
+                if (this.Proficiencies.Contains("Stealth"))
+                {
+                    returnValue += this.Proficiency;
+                }
+                if (this.Expertises.Contains("Stealth"))
+                {
+                    returnValue += this.Proficiency;
+                }
+                return returnValue;
+            }
+        }
+        [NotMapped]
+        public int SurvivalModifier
+        {
+            get
+            {
+                int returnValue = 0 + this.WisdomBonus;
+                if (this.Proficiencies.Contains("Survival"))
+                {
+                    returnValue += this.Proficiency;
+                }
+                if (this.Expertises.Contains("Survival"))
+                {
+                    returnValue += this.Proficiency;
+                }
+                return returnValue;
+            }
+        }
+
+
+
         #endregion
 
         public Race characterRace { get; set; }
@@ -86,7 +458,37 @@ namespace CharacterRoller.Models
         public Class characterClass { get; set; }
         [Display(Name = "Class")]
         public string characterClassId { get; set; }
+
+        private int AbilityScoreImprovementCalculator(string AbilityScore)
+        {
+            int returnInt = 0;
+
+            List<string> splitAbilityScoreImprovements = new List<string>();
+
+            splitAbilityScoreImprovements = this.AbilityScoreImprovements.Split('|').Where(a => a.Contains(AbilityScore)).ToList();
+
+            foreach (var item in splitAbilityScoreImprovements)
+            {
+                string bonus = new String(item.Where(Char.IsDigit).ToArray());
+                returnInt += int.Parse(bonus);
+
+            }
+
+            return returnInt;
+        }
+
+        public Character()
+        {
+
+
+            //Kan dit niet schoner? Een foreachloop kan niet, en ik kan het boven ook niet initializeren. Maar moet toch kunnen?
+
+        }
+
+        
     }
+   
+
 
     public class Race
     {
@@ -94,12 +496,7 @@ namespace CharacterRoller.Models
         public string Id { get; set; }
         [Display(Name = "Race")]
         public string Name { get; set; }
-        public int StrenghtImprovement { get; set; } = 0;
-        public int DexterityImprovement { get; set; } = 0;
-        public int ConstitutionImprovement { get; set; } = 0;
-        public int IntelligenceImprovement { get; set; } = 0;
-        public int WisdomImprovement { get; set; } = 0;
-        public int CharismaImprovement { get; set; } = 0;
+        public string AbilityScoreImprovements { get; set; }
 
         public List<Character> Characters = new List<Character>();
 
@@ -144,9 +541,9 @@ namespace CharacterRoller.Models
         public string Id { get; set; }
         [Display(Name = "Class")]
         public string Name { get; set; }
-        public List<Dictionary<string, int>> abilityScoreImprovements = new List<Dictionary<string, int>>();
         public List<ClassFeature> classFeatures = new List<ClassFeature>();
         public List<Character> Characters = new List<Character>();
+        public string AbilityScoreImprovements { get; set; }
 
         public Class()
         {
@@ -161,157 +558,5 @@ namespace CharacterRoller.Models
 
         public string Class { get; set; }
         public string Feature { get; set; }
-    }
-
-    public class Ability
-    {
-        
-        public string Id { get; set; }
-        public bool Proficient { get; internal set;  }
-        private int baseValue;
-            
-        public int BaseValue { get { return baseValue; } internal set { baseValue = value; } }
-
-        public int Value { get
-            {
-                int returnValue = baseValue;
-                if (this.Proficient)
-                {
-                    returnValue += this.parentCharacter.Proficiency;
-                }
-                //foreach (KeyValuePair<string, int> improvement in this.parentCharacter.race.race.abilityScoreImprovements)
-                //{
-                //    if (improvement.Key == this.ToString())
-                //    {
-                //        returnValue += improvement.Value;
-                //    }
-                //}
-
-                foreach (Dictionary<string, int> abilityScoreImprovement in this.parentCharacter.characterClass.abilityScoreImprovements)
-                {
-                    foreach (KeyValuePair<string, int> improvement in abilityScoreImprovement)
-                    {
-                        if (improvement.Key == this.ToString())
-                        {
-                            returnValue += improvement.Value;
-                        }
-                    }
-                }
-
-                return returnValue;
-            } }
-
-        public int Bonus { get { return (int)MathF.Floor((this.Value - 10) / 2); } }
-        private Character parentCharacter;
-        public int parentCharacterId { get { return this.parentCharacter.Id; } internal set { parentCharacterId = value; } }
-        public Ability()
-        {
-            this.Id = this.ToString();
-        }
-
-        public Ability(Character character, int value, bool proficiency)
-        {
-            this.baseValue = value;
-            this.Proficient = proficiency;
-            this.parentCharacter = character;
-            this.Id = this.ToString();
-            this.parentCharacterId = parentCharacter.Id;
-        }
-    }
-
-    public class Skill
-    {
-        [Key]
-        public string Id { get; set; }
-        private Character parentCharacter;
-        public int parentCharacterId { get { return this.parentCharacter.Id; } internal set { parentCharacterId = value; } }
-        public bool Proficient { get; set; } = false;
-        public bool Expertise { get; set; } = false;
-
-        public Ability parentAbility { get; set; }
-
-        public int value {get
-         {
-                int returnValue = this.parentAbility.Bonus;
-                if (this.Proficient)
-                {
-                    returnValue += parentCharacter.Proficiency;
-                }
-
-                return returnValue;
-        } }
-
-        public Skill()
-        {
-
-        }
-
-        public Skill(Character character)
-        {
-            this.parentCharacter = character;
-            this.parentCharacterId = parentCharacter.Id;
-
-            switch (this.ToString())
-            {
-                case "Acrobatics":
-                    this.parentAbility = this.parentCharacter.Dexterity;
-                    break;
-                case "animalHandling":
-                    this.parentAbility = this.parentCharacter.Wisdom;
-                    break;
-                case "Arcana":
-                    this.parentAbility = this.parentCharacter.Intelligence;
-                    break;
-                case "Athletics":
-                    this.parentAbility = this.parentCharacter.Strength;
-                    break;
-                case "Deception":
-                    this.parentAbility = this.parentCharacter.Charisma;
-                    break;
-                case "History":
-                    this.parentAbility = this.parentCharacter.Intelligence;
-                    break;
-                case "Insight":
-                    this.parentAbility = this.parentCharacter.Wisdom;
-                    break;
-                case "Intimidation":
-                    this.parentAbility = this.parentCharacter.Charisma;
-                    break;
-                case "Investigation":
-                    this.parentAbility = this.parentCharacter.Intelligence;
-                    break;
-                case "Medicine":
-                    this.parentAbility = this.parentCharacter.Wisdom;
-                    break;
-                case "Nature":
-                    this.parentAbility = this.parentCharacter.Intelligence;
-                    break;
-                case "Perception":
-                    this.parentAbility = this.parentCharacter.Wisdom;
-                    break;
-                case "Performance":
-                    this.parentAbility = this.parentCharacter.Charisma;
-                    break;
-                case "Persuasion":
-                    this.parentAbility = this.parentCharacter.Charisma;
-                    break;
-                case "Religion":
-                    this.parentAbility = this.parentCharacter.Intelligence;
-                    break;
-                case "sleightOfHand":
-                    this.parentAbility = this.parentCharacter.Dexterity;
-                    break;
-                case "Stealth":
-                    this.parentAbility = this.parentCharacter.Dexterity;
-                    break;
-                case "Survival":
-                    this.parentAbility = this.parentCharacter.Dexterity;
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
-
-            this.Id = this.parentCharacter.Id + this.ToString();
-        }
-    }
+    }   
 }
