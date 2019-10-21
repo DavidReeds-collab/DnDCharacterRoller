@@ -6,6 +6,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Reflection;
+using System.ComponentModel;
 
 namespace CharacterRoller.Models
 {
@@ -16,8 +17,8 @@ namespace CharacterRoller.Models
         public string Name { get; set; }
         public int Level { get; set; }
         public int Experience { get; set; }
-        public int Proficiency { get { return (int)(1 + MathF.Ceiling(this.Level / 4)); } }
-        
+        public int Proficiency { get { return (int)(1 + MathF.Ceiling((float)((double)this.Level / 4.0))); } }
+
         public string Proficiencies { get; set; } = "";
 
         public string Expertises { get; set; } = "";
@@ -26,7 +27,7 @@ namespace CharacterRoller.Models
         [NotMapped]
         public string AbilityScoreImprovements { get
             {
-                if(this.characterRace != null && this.characterClass != null)
+                if (this.characterRace != null && this.characterClass != null)
                 {
                     return this.characterRace.AbilityScoreImprovements + "|" + this.characterClass.AbilityScoreImprovements;
                 }
@@ -49,7 +50,8 @@ namespace CharacterRoller.Models
                 };
 
             } }
-
+        [Range(3,18)]
+        [DisplayName("Strenght")]
         public int StrenghtBase { get; set; } = 10;
         [NotMapped]
         public int Strenght { get
@@ -58,6 +60,8 @@ namespace CharacterRoller.Models
             } }
         [NotMapped]
         public int StrenghtBonus { get { return (int)Math.Floor((double)(this.Strenght - 10) / 2.0); }  }
+        [Range(3, 18)]
+        [DisplayName("Dexterity")]
         public int DexterityBase { get; set; } = 10;
         [NotMapped]
         public int Dexterity
@@ -69,6 +73,8 @@ namespace CharacterRoller.Models
         }
         [NotMapped]
         public int DexterityBonus { get { return (int)Math.Floor((double)(this.Dexterity - 10) / 2.0); } }
+        [Range(3, 18)]
+        [DisplayName("Constitution")]
         public int ConstitutionBase { get; set; } = 10;
         [NotMapped]
         public int Constitution
@@ -80,6 +86,8 @@ namespace CharacterRoller.Models
         }
         [NotMapped]
         public int ConstitutionBonus { get { return (int)Math.Floor((double)(this.Constitution - 10) / 2.0); } }
+        [Range(3, 18)]
+        [DisplayName("Ingelligence")]
         public int IntelligenceBase { get; set; } = 10;
         [NotMapped]
         public int Intelligence
@@ -91,6 +99,8 @@ namespace CharacterRoller.Models
         }
         [NotMapped]
         public int IntelligenceBonus { get { return (int)Math.Floor((double)(this.Intelligence - 10) / 2.0); } }
+        [Range(3, 18)]
+        [DisplayName("Wisdom")]
         public int WisdomBase { get; set; } = 10;
         [NotMapped]
         public int Wisdom
@@ -102,6 +112,7 @@ namespace CharacterRoller.Models
         }
         [NotMapped]
         public int WisdomBonus { get { return (int)Math.Floor((double)(this.Wisdom - 10) / 2.0); } }
+        [Range(3, 18)][DisplayName("Charisma")]
         public int CharismaBase { get; set; } = 10;
         [NotMapped]
         public int Charisma
