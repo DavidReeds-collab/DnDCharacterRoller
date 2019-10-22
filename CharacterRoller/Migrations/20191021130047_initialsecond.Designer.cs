@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CharacterRoller.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20190930075135_initial")]
-    partial class initial
+    [Migration("20191021130047_initialsecond")]
+    partial class initialsecond
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -62,6 +62,26 @@ namespace CharacterRoller.Migrations
                     b.ToTable("Characters");
                 });
 
+            modelBuilder.Entity("CharacterRoller.Models.Choice", b =>
+                {
+                    b.Property<string>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<int>("AllowedNumberOfOptions");
+
+                    b.Property<string>("ChosenOptions");
+
+                    b.Property<int>("Destination");
+
+                    b.Property<string>("Options");
+
+                    b.Property<bool>("resolved");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Choices");
+                });
+
             modelBuilder.Entity("CharacterRoller.Models.Class", b =>
                 {
                     b.Property<string>("Id")
@@ -102,11 +122,17 @@ namespace CharacterRoller.Migrations
 
                     b.Property<int>("Level");
 
-                    b.Property<bool>("choice");
+                    b.Property<string>("choiceId");
 
                     b.HasKey("classFeatureId");
 
+                    b.HasIndex("choiceId");
+
                     b.ToTable("ClassFeatures");
+
+                    b.HasData(
+                        new { classFeatureId = "fighterProficiencyChoice", Class = "fighter", Feature = "Skills: Choose two Skills from Acrobatics, Animal Handling, Athletics, History, Insight, Intimidation, Perception, and Survival", Level = 0 }
+                    );
                 });
 
             modelBuilder.Entity("CharacterRoller.Models.Race", b =>
@@ -335,6 +361,13 @@ namespace CharacterRoller.Migrations
                     b.HasOne("CharacterRoller.Models.Race", "characterRace")
                         .WithMany()
                         .HasForeignKey("characterRaceId");
+                });
+
+            modelBuilder.Entity("CharacterRoller.Models.ClassFeature", b =>
+                {
+                    b.HasOne("CharacterRoller.Models.Choice", "Choice")
+                        .WithMany()
+                        .HasForeignKey("choiceId");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

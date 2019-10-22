@@ -179,11 +179,29 @@ namespace CharacterRoller.Data
                 Id = "druid",
                 Name = "Druid"
             });
+            #region Fighter
             modelBuilder.Entity<Class>().HasData(new Class()
             {
                 Id = "fighter",
                 Name = "Fighter"
+                
             });
+            modelBuilder.Entity<ClassFeature>().HasData(new ClassFeature()
+            {
+                Class = "fighter",
+                classFeatureId = "fighterProficiencyChoice",
+                Level = 0,
+                //choiceId = "FighterProficiencyChoice",
+                Feature = "Skills: Choose two Skills from Acrobatics, Animal Handling, Athletics, History, Insight, Intimidation, Perception, and Survival"
+            });
+            //modelBuilder.Entity<Choice>().HasData(new Choice()
+            //{
+            //    //Id = "FighterProficiencyChoice",
+            //    //AllowedNumberOfOptions = 2,
+            //    //Destination = ChoiceDestinations.Proficiency,
+            //    //Options = "Acrobatics,Animal Handling,Athletics,History,Insight,Intimidation,Perception,Survival"
+            //});
+            #endregion
             modelBuilder.Entity<Class>().HasData(new Class()
             {
                 Id = "monk",
@@ -233,6 +251,7 @@ namespace CharacterRoller.Data
         public DbSet<CharacterRoller.Models.Class> Classes { get; set; }
         public DbSet<CharacterRoller.Models.RaceFeature> RaceFeatures { get; set; }
         public DbSet<CharacterRoller.Models.ClassFeature> ClassFeatures { get; set; }
+        public DbSet<CharacterRoller.Models.Choice> Choices { get; set; }
 
     }
 }

@@ -48,6 +48,22 @@ namespace CharacterRoller.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Choices",
+                columns: table => new
+                {
+                    Id = table.Column<string>(nullable: false),
+                    resolved = table.Column<bool>(nullable: false),
+                    Options = table.Column<string>(nullable: true),
+                    AllowedNumberOfOptions = table.Column<int>(nullable: false),
+                    Destination = table.Column<int>(nullable: false),
+                    ChosenOptions = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Choices", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Classes",
                 columns: table => new
                 {
@@ -58,21 +74,6 @@ namespace CharacterRoller.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Classes", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "ClassFeatures",
-                columns: table => new
-                {
-                    classFeatureId = table.Column<string>(nullable: false),
-                    Level = table.Column<int>(nullable: false),
-                    choice = table.Column<bool>(nullable: false),
-                    Class = table.Column<string>(nullable: true),
-                    Feature = table.Column<string>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ClassFeatures", x => x.classFeatureId);
                 });
 
             migrationBuilder.CreateTable(
@@ -209,6 +210,27 @@ namespace CharacterRoller.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "ClassFeatures",
+                columns: table => new
+                {
+                    classFeatureId = table.Column<string>(nullable: false),
+                    Level = table.Column<int>(nullable: false),
+                    choiceId = table.Column<string>(nullable: true),
+                    Class = table.Column<string>(nullable: true),
+                    Feature = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ClassFeatures", x => x.classFeatureId);
+                    table.ForeignKey(
+                        name: "FK_ClassFeatures_Choices_choiceId",
+                        column: x => x.choiceId,
+                        principalTable: "Choices",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Characters",
                 columns: table => new
                 {
@@ -246,6 +268,11 @@ namespace CharacterRoller.Migrations
                 });
 
             migrationBuilder.InsertData(
+                table: "ClassFeatures",
+                columns: new[] { "classFeatureId", "Class", "Feature", "Level", "choiceId" },
+                values: new object[] { "fighterProficiencyChoice", "fighter", "Skills: Choose two Skills from Acrobatics, Animal Handling, Athletics, History, Insight, Intimidation, Perception, and Survival", 0, "FighterProficiencyChoice" });
+
+            migrationBuilder.InsertData(
                 table: "Classes",
                 columns: new[] { "Id", "AbilityScoreImprovements", "Name" },
                 values: new object[,]
@@ -255,13 +282,13 @@ namespace CharacterRoller.Migrations
                     { "warlock", null, "Warlock" },
                     { "rogue", null, "Rogue" },
                     { "ranger", null, "Ranger" },
-                    { "paladin", null, "Paladin" },
                     { "sorcerer", null, "Sorcerer" },
+                    { "monk", null, "Monk" },
                     { "fighter", null, "Fighter" },
                     { "druid", null, "Druid" },
                     { "cleric", null, "Cleric" },
                     { "bard", null, "Bard" },
-                    { "monk", null, "Monk" }
+                    { "paladin", null, "Paladin" }
                 });
 
             migrationBuilder.InsertData(
@@ -342,6 +369,11 @@ namespace CharacterRoller.Migrations
                 name: "IX_Characters_characterRaceId",
                 table: "Characters",
                 column: "characterRaceId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ClassFeatures_choiceId",
+                table: "ClassFeatures",
+                column: "choiceId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -381,6 +413,9 @@ namespace CharacterRoller.Migrations
 
             migrationBuilder.DropTable(
                 name: "Races");
+
+            migrationBuilder.DropTable(
+                name: "Choices");
         }
     }
 }

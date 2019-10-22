@@ -15,6 +15,7 @@ namespace CharacterRoller.Models
         [Key]
         public int Id { get; set; }
         public string Name { get; set; }
+        [Range(1, 20)]
         public int Level { get; set; }
         public int Experience { get; set; }
         public int Proficiency { get { return (int)(1 + MathF.Ceiling((float)((double)this.Level / 4.0))); } }
@@ -492,7 +493,7 @@ namespace CharacterRoller.Models
         {
 
 
-            //Kan dit niet schoner? Een foreachloop kan niet, en ik kan het boven ook niet initializeren. Maar moet toch kunnen?
+            
 
         }
 
@@ -565,7 +566,9 @@ namespace CharacterRoller.Models
     {
         public string classFeatureId { get; set; }
         public int Level { get; set; }
-        public bool choice { get; set; }
+        public string choiceId { get; set; }
+        public Choice Choice { get; set; } = null;
+
 
         public string Class { get; set; }
         public string Feature { get; set; }

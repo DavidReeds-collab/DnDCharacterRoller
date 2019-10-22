@@ -68,13 +68,13 @@
                 <p>@item.Feature</p>
             </dd>
         }
+        <h3>Class Features</h3>
         <dt>
             @Html.DisplayNameFor(model => model.characterClass.Name)
         </dt>
         <dd>
             @Html.DisplayFor(model => model.characterClass.Name)
         </dd>
-        <h3>Class Features</h3>
         @foreach (var item in Model.characterClass.classFeatures)
         {
             <dt>

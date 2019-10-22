@@ -99,17 +99,46 @@ namespace CharacterRoller.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Name,Level,StrenghtBase,DexterityBase,ConstitutionBase,IntelligenceBase,WisdomBase,CharismaBase, characterClassId, characterRaceId")] Character character)
         {
+            List<Choice> choices = await GetChoices(character);
 
-            if (ModelState.IsValid)
+            if (ModelState.IsValid && choices.Count != 0)
             {
                 _context.Add(character);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-
-
+            else if (ModelState.IsValid)
+            {
+                _context.Add(character);
+                await _context.SaveChangesAsync();
+                return View("Choices", choices);
+            }
 
             return View(character);
+        }
+
+        private async Task<List<Choice>> GetChoices(Character character)
+        {
+            character.characterClass.classFeatures = await _context.ClassFeatures
+                .Where(c => c.Class == character.characterClassId)
+                .ToListAsync();
+
+            List<Choice> choices = new List<Choice>();
+
+            foreach (var classFeature in character.characterClass.classFeatures)
+            {
+                if (!string.IsNullOrEmpty(classFeature.choiceId) && classFeature.Level >= character.Level)
+                {
+                    classFeature.Choice = await _context.Choices.Where(c => c.Id == classFeature.choiceId).FirstOrDefaultAsync();
+                }
+                else
+                {
+                    continue;
+                }
+                choices.Add(classFeature.Choice);
+            }
+
+            return choices;
         }
 
         // GET: Characters/Edit/5
