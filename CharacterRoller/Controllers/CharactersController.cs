@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using CharacterRoller.Data;
 using CharacterRoller.Models;
+using CharacterRoller.Services;
 
 namespace CharacterRoller.Controllers
 {
@@ -17,10 +18,12 @@ namespace CharacterRoller.Controllers
         private readonly ApplicationDbContext _context;
 
         public static Races racesMain;
+        private ICharacterService _charService;
 
-        public CharactersController(ApplicationDbContext context)
+        public CharactersController(ApplicationDbContext context, ICharacterService charService)
         {
             _context = context;
+            _charService = charService;
         }
 
         // GET: Characters
@@ -32,25 +35,12 @@ namespace CharacterRoller.Controllers
         // GET: Characters/Details/5
         public async Task<IActionResult> Details(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            Character character = await _charService.LoadCharacter(id);
 
-            var character = await _context.Characters
-                .FirstOrDefaultAsync(m => m.Id == id);
             if (character == null)
             {
                 return NotFound();
             }
-
-            character.characterRace = _context.Races.Where(r => r.Id == character.characterRaceId).FirstOrDefault();
-
-            character.characterRace.raceFeatures = _context.RaceFeatures.Where(rf => rf.race == character.characterRace.Id).ToList(); 
-
-            character.characterClass = _context.Classes.Where(c => c.Id == character.characterClassId).FirstOrDefault();
-
-            character.characterClass.classFeatures = _context.ClassFeatures.Where(a => a.Class == character.characterClass.Id).ToList();
 
             return View(character);
         }
@@ -99,43 +89,50 @@ namespace CharacterRoller.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Name,Level,StrenghtBase,DexterityBase,ConstitutionBase,IntelligenceBase,WisdomBase,CharismaBase, characterClassId, characterRaceId")] Character character)
         {
-            List<Choice> choices = await GetChoices(character);
 
-            if (ModelState.IsValid && choices.Count != 0)
+            List<Choice> choices = new List<Choice>();
+
+            if (ModelState.IsValid)
             {
                 _context.Add(character);
+
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+
+                Character _character = await _charService.LoadCharacter(character.Id);
+
+                choices = await GetChoices(character);
+
+                if (choices.Count == 0)
+                {
+                    return RedirectToAction(nameof(Index));
+                }
+                else if (choices.Count != 0)
+                {                    
+                    return View("Choices", choices);
+                }
             }
-            else if (ModelState.IsValid)
-            {
-                _context.Add(character);
-                await _context.SaveChangesAsync();
-                return View("Choices", choices);
-            }
+
+
 
             return View(character);
         }
 
         private async Task<List<Choice>> GetChoices(Character character)
         {
-            character.characterClass.classFeatures = await _context.ClassFeatures
-                .Where(c => c.Class == character.characterClassId)
-                .ToListAsync();
-
             List<Choice> choices = new List<Choice>();
 
-            foreach (var classFeature in character.characterClass.classFeatures)
+            foreach (ClassFeature feature in character.characterClass.classFeatures)
             {
-                if (!string.IsNullOrEmpty(classFeature.choiceId) && classFeature.Level >= character.Level)
-                {
-                    classFeature.Choice = await _context.Choices.Where(c => c.Id == classFeature.choiceId).FirstOrDefaultAsync();
-                }
-                else
+                if (string.IsNullOrEmpty(feature.choiceId) || feature.Level > character.Level)
                 {
                     continue;
                 }
-                choices.Add(classFeature.Choice);
+
+                feature.Choice = _context.Choices.Where(c => c.Id == feature.choiceId).FirstOrDefault();
+
+                feature.Choice.classFeature = feature;
+
+                choices.Add(feature.Choice);
             }
 
             return choices;

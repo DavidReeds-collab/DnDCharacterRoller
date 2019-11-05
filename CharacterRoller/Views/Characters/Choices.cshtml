@@ -5,3 +5,26 @@
 
 <h2>Choices</h2>
 
+<div>
+    <dl class="dl-horizontal">
+        <h3>Make the following choices:</h3>
+
+        @foreach (Choice feature in Model)
+        {
+
+            <H4>@feature.classFeature.Feature</H4>
+            foreach (var option in feature.OptionsList)
+            {
+                <dt>
+                    <p>@option.ToString()</p>
+                </dt>
+                <dd>
+                    <input type="checkbox" checked="">
+                </dd>
+
+
+            }
+
+        }
+    </dl>
+</div>

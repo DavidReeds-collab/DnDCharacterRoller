@@ -67,17 +67,20 @@ namespace CharacterRoller.Migrations
 
                     b.Property<int>("AllowedNumberOfOptions");
 
-                    b.Property<string>("ChosenOptions");
-
-                    b.Property<int>("Destination");
+                    b.Property<string>("Discriminator")
+                        .IsRequired();
 
                     b.Property<string>("Options");
-
-                    b.Property<bool>("resolved");
 
                     b.HasKey("Id");
 
                     b.ToTable("Choices");
+
+                    b.HasDiscriminator<string>("Discriminator").HasValue("Choice");
+
+                    b.HasData(
+                        new { Id = "FighterProficiencyChoice", AllowedNumberOfOptions = 2, Options = "Acrobatics,Animal Handling,Athletics,History,Insight,Intimidation,Perception,Survival" }
+                    );
                 });
 
             modelBuilder.Entity("CharacterRoller.Models.Class", b =>
@@ -129,7 +132,7 @@ namespace CharacterRoller.Migrations
                     b.ToTable("ClassFeatures");
 
                     b.HasData(
-                        new { classFeatureId = "fighterProficiencyChoice", Class = "fighter", Feature = "Skills: Choose two Skills from Acrobatics, Animal Handling, Athletics, History, Insight, Intimidation, Perception, and Survival", Level = 0 }
+                        new { classFeatureId = "fighterProficiencyChoice", Class = "fighter", Feature = "Skills: Choose two Skills from Acrobatics, Animal Handling, Athletics, History, Insight, Intimidation, Perception, and Survival", Level = 0, choiceId = "FighterProficiencyChoice" }
                     );
                 });
 
@@ -348,6 +351,33 @@ namespace CharacterRoller.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens");
+                });
+
+            modelBuilder.Entity("CharacterRoller.Models.FeatureChoice", b =>
+                {
+                    b.HasBaseType("CharacterRoller.Models.Choice");
+
+                    b.Property<int>("CharacterId");
+
+                    b.Property<string>("ChosenFeatures");
+
+                    b.ToTable("FeatureChoice");
+
+                    b.HasDiscriminator().HasValue("FeatureChoice");
+                });
+
+            modelBuilder.Entity("CharacterRoller.Models.ProficiencyChoice", b =>
+                {
+                    b.HasBaseType("CharacterRoller.Models.Choice");
+
+                    b.Property<int>("CharacterId")
+                        .HasColumnName("ProficiencyChoice_CharacterId");
+
+                    b.Property<string>("ChosenProficiencies");
+
+                    b.ToTable("ProficiencyChoice");
+
+                    b.HasDiscriminator().HasValue("ProficiencyChoice");
                 });
 
             modelBuilder.Entity("CharacterRoller.Models.Character", b =>

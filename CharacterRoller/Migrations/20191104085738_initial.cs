@@ -52,11 +52,13 @@ namespace CharacterRoller.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(nullable: false),
-                    resolved = table.Column<bool>(nullable: false),
                     Options = table.Column<string>(nullable: true),
                     AllowedNumberOfOptions = table.Column<int>(nullable: false),
-                    Destination = table.Column<int>(nullable: false),
-                    ChosenOptions = table.Column<string>(nullable: true)
+                    Discriminator = table.Column<string>(nullable: false),
+                    CharacterId = table.Column<int>(nullable: true),
+                    ChosenFeatures = table.Column<string>(nullable: true),
+                    ProficiencyChoice_CharacterId = table.Column<int>(nullable: true),
+                    ChosenProficiencies = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -268,27 +270,27 @@ namespace CharacterRoller.Migrations
                 });
 
             migrationBuilder.InsertData(
-                table: "ClassFeatures",
-                columns: new[] { "classFeatureId", "Class", "Feature", "Level", "choiceId" },
-                values: new object[] { "fighterProficiencyChoice", "fighter", "Skills: Choose two Skills from Acrobatics, Animal Handling, Athletics, History, Insight, Intimidation, Perception, and Survival", 0, "FighterProficiencyChoice" });
+                table: "Choices",
+                columns: new[] { "Id", "AllowedNumberOfOptions", "Discriminator", "Options" },
+                values: new object[] { "FighterProficiencyChoice", 2, "Choice", "Acrobatics,Animal Handling,Athletics,History,Insight,Intimidation,Perception,Survival" });
 
             migrationBuilder.InsertData(
                 table: "Classes",
                 columns: new[] { "Id", "AbilityScoreImprovements", "Name" },
                 values: new object[,]
                 {
-                    { "barbarian", null, "Barbarian" },
                     { "wizard", null, "Wizard" },
                     { "warlock", null, "Warlock" },
-                    { "rogue", null, "Rogue" },
-                    { "ranger", null, "Ranger" },
                     { "sorcerer", null, "Sorcerer" },
-                    { "monk", null, "Monk" },
+                    { "ranger", null, "Ranger" },
+                    { "paladin", null, "Paladin" },
+                    { "rogue", null, "Rogue" },
                     { "fighter", null, "Fighter" },
                     { "druid", null, "Druid" },
                     { "cleric", null, "Cleric" },
                     { "bard", null, "Bard" },
-                    { "paladin", null, "Paladin" }
+                    { "barbarian", null, "Barbarian" },
+                    { "monk", null, "Monk" }
                 });
 
             migrationBuilder.InsertData(
@@ -320,6 +322,11 @@ namespace CharacterRoller.Migrations
                     { "human", "Strenght_1_Racial|Dexterity_1_Racial|Constitution_1_Racial|Intelligence_1_Racial|Wisdom_1_Racial|Charisma_1_Racial", "Human" },
                     { "humanVariant", null, "Human (Variant)" }
                 });
+
+            migrationBuilder.InsertData(
+                table: "ClassFeatures",
+                columns: new[] { "classFeatureId", "Class", "Feature", "Level", "choiceId" },
+                values: new object[] { "fighterProficiencyChoice", "fighter", "Skills: Choose two Skills from Acrobatics, Animal Handling, Athletics, History, Insight, Intimidation, Perception, and Survival", 0, "FighterProficiencyChoice" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",

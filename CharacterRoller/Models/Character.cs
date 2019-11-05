@@ -459,8 +459,6 @@ namespace CharacterRoller.Models
             }
         }
 
-
-
         #endregion
 
         public Race characterRace { get; set; }
@@ -470,6 +468,10 @@ namespace CharacterRoller.Models
         public Class characterClass { get; set; }
         [Display(Name = "Class")]
         public string characterClassId { get; set; }
+        [NotMapped]
+        public List<ProficiencyChoice> CharacterProficiencyChoices { get; set; }
+        [NotMapped]
+        public List<FeatureChoice> CharacterFeatureChoices { get; set; }
 
         private int AbilityScoreImprovementCalculator(string AbilityScore)
         {

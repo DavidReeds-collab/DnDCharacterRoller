@@ -191,16 +191,15 @@ namespace CharacterRoller.Data
                 Class = "fighter",
                 classFeatureId = "fighterProficiencyChoice",
                 Level = 0,
-                //choiceId = "FighterProficiencyChoice",
+                choiceId = "FighterProficiencyChoice",
                 Feature = "Skills: Choose two Skills from Acrobatics, Animal Handling, Athletics, History, Insight, Intimidation, Perception, and Survival"
             });
-            //modelBuilder.Entity<Choice>().HasData(new Choice()
-            //{
-            //    //Id = "FighterProficiencyChoice",
-            //    //AllowedNumberOfOptions = 2,
-            //    //Destination = ChoiceDestinations.Proficiency,
-            //    //Options = "Acrobatics,Animal Handling,Athletics,History,Insight,Intimidation,Perception,Survival"
-            //});
+            modelBuilder.Entity<Choice>().HasData(new Choice()
+            {
+                Id = "FighterProficiencyChoice",
+                AllowedNumberOfOptions = 2,
+                Options = "Acrobatics,Animal Handling,Athletics,History,Insight,Intimidation,Perception,Survival"
+            });
             #endregion
             modelBuilder.Entity<Class>().HasData(new Class()
             {
@@ -252,6 +251,8 @@ namespace CharacterRoller.Data
         public DbSet<CharacterRoller.Models.RaceFeature> RaceFeatures { get; set; }
         public DbSet<CharacterRoller.Models.ClassFeature> ClassFeatures { get; set; }
         public DbSet<CharacterRoller.Models.Choice> Choices { get; set; }
+        public DbSet<CharacterRoller.Models.FeatureChoice> featureChoices { get; set; }
+        public DbSet<CharacterRoller.Models.ProficiencyChoice> proficiencyChoices { get; set; }
 
     }
 }
