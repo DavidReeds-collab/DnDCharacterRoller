@@ -207,7 +207,7 @@ namespace CharacterRoller.Controllers
             return View(character);
         }
         [HttpPost, ActionName("Choice")]
-        public ActionResult ChoiceForm(IDictionary<string, bool> choices)
+        public ActionResult ChoiceForm(IDictionary<string, bool> Choices)
         {
 
             return RedirectToAction(nameof(Index));
