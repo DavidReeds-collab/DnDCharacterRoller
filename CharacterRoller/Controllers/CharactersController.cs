@@ -206,6 +206,12 @@ namespace CharacterRoller.Controllers
 
             return View(character);
         }
+        [HttpPost, ActionName("Choice")]
+        public ActionResult ChoiceForm(IDictionary<string, bool> choices)
+        {
+
+            return RedirectToAction(nameof(Index));
+        }
 
         // POST: Characters/Delete/5
         [HttpPost, ActionName("Delete")]

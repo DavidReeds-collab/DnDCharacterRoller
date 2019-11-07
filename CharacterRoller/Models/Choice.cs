@@ -9,24 +9,6 @@ using System.Threading.Tasks;
 
 namespace CharacterRoller.Models
 {
-    public interface IChoice
-    {
-        string Options { get; set; }
-        int AllowedNumberOfOptions { get; set; }
-    }
-
-    public interface IProficiencyChoice : IChoice
-    {
-        string ChosenProficiencies { get; set; }
-    }
-
-    public interface IClassFeatureChoice : IChoice
-    {
-        string ChosenFeature { get; set; }
-    }
-
-
-
     public class Choice
     {
         [Key]
@@ -108,6 +90,11 @@ namespace CharacterRoller.Models
                 return returnList;
             }
         }
+
+    }
+
+    public class ChoiceReciever
+    {
 
     }
 

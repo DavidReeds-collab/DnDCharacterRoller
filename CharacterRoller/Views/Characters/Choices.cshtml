@@ -6,25 +6,29 @@
 <h2>Choices</h2>
 
 <div>
-    <dl class="dl-horizontal">
-        <h3>Make the following choices:</h3>
 
-        @foreach (Choice feature in Model)
-        {
+    <div class="col-md-4">
+        <form asp-action="Choice">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-            <H4>@feature.classFeature.Feature</H4>
-            foreach (var option in feature.OptionsList)
+            @foreach (Choice feature in Model)
             {
-                <dt>
-                    <p>@option.ToString()</p>
-                </dt>
-                <dd>
-                    <input type="checkbox" checked="">
-                </dd>
 
+                <H4>@feature.classFeature.Feature</H4>
 
+                for (int i = 0; i < feature.OptionsList.Count(); i++)
+                {
+        <div class="form-group">
+            <p>@feature.OptionsList[i].ToString()</p>
+            <input id="@String.Format($"Choices[{i}].Key")" type="checkbox" value="@String.Format($"Choices[{i}].value")" name="@String.Format($"Choices[{i}].Key")"/>
+            <input type="hidden" value="false" name="@String.Format($"Choices[{i}].Key")" />
+
+        </div>
+                }
             }
-
-        }
-    </dl>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-default" />
+            </div>
+        </form>
+    </div>
 </div>
