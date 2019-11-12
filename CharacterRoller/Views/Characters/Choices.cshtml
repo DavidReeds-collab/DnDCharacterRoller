@@ -1,4 +1,4 @@
-﻿@model List<CharacterRoller.Models.Choice>
+﻿@model ChoiceViewModel
 @{
     ViewData["Title"] = "Choices";
 }
@@ -10,22 +10,26 @@
     <div class="col-md-4">
         <form asp-action="Choice">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
 
-            @foreach (Choice feature in Model)
-            {
+                @Html.Hidden("characterId", Model.Character.Id)
 
-                <H4>@feature.classFeature.Feature</H4>
-
-                for (int i = 0; i < feature.OptionsList.Count(); i++)
+                @for (int IFeature = 0; IFeature < Model.Choices.Count; IFeature++)
                 {
-        <div class="form-group">
-            <p>@feature.OptionsList[i].ToString()</p>
-            <input id="@String.Format($"Choices[{i}].Key")" type="checkbox" value="@String.Format($"Choices[{i}].value")" name="@String.Format($"Choices[{i}].Key")"/>
-            <input type="hidden" value="false" name="@String.Format($"Choices[{i}].Key")" />
+                    <H4>@Model.Choices.[IFeature].classFeature.Feature</H4>
 
-        </div>
+                    @for (int IOptions = 0; IOptions < Model.Choices[IFeature].OptionsList.Count(); IOptions++)
+                    {
+
+                        <p>@Model.Choices[IFeature].OptionsList[IOptions].ToString()</p>
+                        @Html.CheckBox($"Choices[{IFeature}][{IOptions}].Selected")
+                        @Html.Hidden($"Choices[{IFeature}][{IOptions}].Name", Model.Choices[IFeature].OptionsList[IOptions].ToString())
+                        @Html.Hidden($"Choices[{IFeature}][{IOptions}].choiceId", Model.Choices[IFeature].Id.ToString())
+
+
+                    }
                 }
-            }
+            </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-default" />
             </div>

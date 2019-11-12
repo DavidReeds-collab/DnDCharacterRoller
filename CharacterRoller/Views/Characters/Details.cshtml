@@ -75,12 +75,16 @@
         <dd>
             @Html.DisplayFor(model => model.characterClass.Name)
         </dd>
-        @foreach (var item in Model.characterClass.classFeatures)
+        @foreach (KeyValuePair<string, string> clasFeature in Model.CharacterClassFeatures)
         {
             <dt>
-                <p>@item.Feature</p>
+                <p>@clasFeature.Key</p>
             </dt>
+            <dd>
+                <p>@clasFeature.Value</p>
+            </dd>
         }
+
         <dt>
             @Html.DisplayNameFor(model => model.Experience)
         </dt>

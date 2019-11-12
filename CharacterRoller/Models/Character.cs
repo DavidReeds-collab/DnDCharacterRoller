@@ -466,6 +466,46 @@ namespace CharacterRoller.Models
         public string characterRaceId { get; set; }
 
         public Class characterClass { get; set; }
+
+        [NotMapped]
+        public Dictionary<string, string> CharacterClassFeatures { get
+            {
+                Dictionary<string, string> returnDictionary = new Dictionary<string, string>();
+
+                foreach (ClassFeature classFeature in this.characterClass.classFeatures)
+                {
+                    if (classFeature.choiceId == null && classFeature.Level <= this.Level)
+                    {
+                        returnDictionary.Add(classFeature.Class + " " + classFeature.Level, classFeature.Feature);
+                    }
+                    else if ((classFeature.choiceId != null && classFeature.Level <= this.Level))
+                    {
+                        FeatureChoice featureChoice = this.CharacterFeatureChoices
+                            .Where(cfc => cfc.Id.ToLower().Contains(classFeature.classFeatureId.ToLower()))
+                            .FirstOrDefault();
+                        ProficiencyChoice proficiencyChoice = this.CharacterProficiencyChoices
+                            .Where(cfc => cfc.Id.ToLower().Contains(classFeature.classFeatureId.ToLower()))
+                            .FirstOrDefault();
+
+                        if (featureChoice != null)
+                        {
+                            returnDictionary.Add(classFeature.Class + " " + classFeature.Level, classFeature.Feature);
+                            returnDictionary.Add("Chosen option:", featureChoice.ChosenFeatures);
+                        }
+                        else if (proficiencyChoice != null)
+                        {
+                            returnDictionary.Add(classFeature.Class + " " + classFeature.Level, classFeature.Feature);
+                            returnDictionary.Add("Chosen option:", proficiencyChoice.ChosenProficiencies);
+                        }
+
+                        
+                    }
+                }
+                returnDictionary.Add("test", "test");
+
+                return returnDictionary;
+
+            } }
         [Display(Name = "Class")]
         public string characterClassId { get; set; }
         [NotMapped]

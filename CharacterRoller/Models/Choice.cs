@@ -15,6 +15,9 @@ namespace CharacterRoller.Models
         public string Id { get; set; }
         [NotMapped]
         public ClassFeature classFeature { get; set; }
+
+        public string Type { get; set; }
+
         [NotMapped]
         public List<string> OptionsList {
             get
@@ -68,6 +71,48 @@ namespace CharacterRoller.Models
             }
         }
 
+        public ProficiencyChoice()
+        {
+
+        }
+
+        public ProficiencyChoice(Choice choice, Character character)
+        {
+            this.Id = choice.Id + character.Id;
+            this.Type = "Proficiency";
+            this.AllowedNumberOfOptions = choice.AllowedNumberOfOptions;
+            this.Character = character;
+            this.CharacterId = character.Id;
+            this.classFeature = choice.classFeature;
+            this.Options = choice.Options;
+        }
+
+        public ProficiencyChoice(Choice choice, Character character, List<ChoiceReciever> choiceRecievers)
+        {
+            this.Id = choice.Id + character.Id;
+            this.Type = "Feature";
+            this.AllowedNumberOfOptions = choice.AllowedNumberOfOptions;
+            this.Character = character;
+            this.CharacterId = character.Id;
+            this.classFeature = choice.classFeature;
+            this.Options = choice.Options;
+            this.ChosenProficiencies = "";
+
+            foreach (ChoiceReciever chosenOption in choiceRecievers)
+            {
+                if (chosenOption.selected)
+                {
+                    this.ChosenProficiencies += (chosenOption.name + ",");
+                }
+
+            }
+
+            if (this.ChosenProficiencies.Last() == ',')
+            {
+                this.ChosenProficiencies.Remove(ChosenProficiencies.Length - 1);
+            }
+
+        }
     }
 
     public class FeatureChoice : Choice
@@ -91,11 +136,62 @@ namespace CharacterRoller.Models
             }
         }
 
+        public FeatureChoice()
+        {
+
+        }
+
+        public FeatureChoice(Choice choice, Character character)
+        {
+            this.Id = choice.Id + character.Id;
+            this.Type = "Feature";
+            this.AllowedNumberOfOptions = choice.AllowedNumberOfOptions;
+            this.Character = character;
+            this.CharacterId = character.Id;
+            this.classFeature = choice.classFeature;
+            this.Options = choice.Options;
+        }
+
+        public FeatureChoice(Choice choice, Character character, List<ChoiceReciever> choiceRecievers)
+        {
+            this.Id = choice.Id + character.Id;
+            this.Type = "Feature";
+            this.AllowedNumberOfOptions = choice.AllowedNumberOfOptions;
+            this.Character = character;
+            this.CharacterId = character.Id;
+            this.classFeature = choice.classFeature;
+            this.Options = choice.Options;
+            this.ChosenFeatures = "";
+
+            foreach (ChoiceReciever chosenOption in choiceRecievers)
+            {
+                if (chosenOption.selected)
+                {
+                    this.ChosenFeatures += (chosenOption.name + ",");
+                }
+                
+            }
+
+            if (this.ChosenFeatures.Last() == ',')
+            {
+                this.ChosenFeatures.Remove(ChosenFeatures.Length - 1);
+            }
+            
+        }
+
+    }
+
+    public class ChoiceViewModel
+    {
+        public List<Choice> Choices { get; set; }
+        public Character Character { get; set; }
     }
 
     public class ChoiceReciever
     {
-
+        public string choiceId { get; set; }
+        public string name { get; set; }
+        public bool selected { get; set; }
     }
 
 

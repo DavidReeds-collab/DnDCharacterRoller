@@ -45,6 +45,7 @@ namespace CharacterRoller
 
 
             services.AddTransient<ICharacterService, CharacterService>();
+            services.AddTransient<IChoiceResolverService, ChoiceServices>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

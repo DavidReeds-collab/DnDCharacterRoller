@@ -19,11 +19,13 @@ namespace CharacterRoller.Controllers
 
         public static Races racesMain;
         private ICharacterService _charService;
+        private IChoiceResolverService _choiceResolverService;
 
-        public CharactersController(ApplicationDbContext context, ICharacterService charService)
+        public CharactersController(ApplicationDbContext context, ICharacterService charService, IChoiceResolverService choiceResolverService)
         {
             _context = context;
             _charService = charService;
+            _choiceResolverService = choiceResolverService;
         }
 
         // GET: Characters
@@ -89,9 +91,6 @@ namespace CharacterRoller.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Name,Level,StrenghtBase,DexterityBase,ConstitutionBase,IntelligenceBase,WisdomBase,CharismaBase, characterClassId, characterRaceId")] Character character)
         {
-
-            List<Choice> choices = new List<Choice>();
-
             if (ModelState.IsValid)
             {
                 _context.Add(character);
@@ -100,15 +99,19 @@ namespace CharacterRoller.Controllers
 
                 Character _character = await _charService.LoadCharacter(character.Id);
 
-                choices = await GetChoices(character);
+                ChoiceViewModel choiceViewModel = new ChoiceViewModel();
 
-                if (choices.Count == 0)
+                choiceViewModel.Choices = await GetChoices(character);
+
+                choiceViewModel.Character = _character;
+
+                if (choiceViewModel.Choices.Count == 0)
                 {
                     return RedirectToAction(nameof(Index));
                 }
-                else if (choices.Count != 0)
+                else if (choiceViewModel.Choices.Count != 0)
                 {                    
-                    return View("Choices", choices);
+                    return View("Choices", choiceViewModel);
                 }
             }
 
@@ -207,8 +210,12 @@ namespace CharacterRoller.Controllers
             return View(character);
         }
         [HttpPost, ActionName("Choice")]
-        public ActionResult ChoiceForm(IDictionary<string, bool> Choices)
+        public async Task<IActionResult> ChoiceForm(int characterId, List<List<ChoiceReciever>> Choices)
         {
+            foreach (List<ChoiceReciever> choice in Choices)
+            {
+                await _choiceResolverService.ChoiceResolver(characterId, choice);
+            }
 
             return RedirectToAction(nameof(Index));
         }
