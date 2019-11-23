@@ -191,6 +191,7 @@ namespace CharacterRoller.Data
                 Class = "fighter",
                 classFeatureId = "fighterProficiencyChoice",
                 Level = 0,
+                Name = "Proficiencies",
                 choiceId = "FighterProficiencyChoice",
                 Feature = "Skills: Choose two Skills from Acrobatics, Animal Handling, Athletics, History, Insight, Intimidation, Perception, and Survival"
             });
@@ -207,6 +208,7 @@ namespace CharacterRoller.Data
                 classFeatureId = "FighterFightingStyle",
                 Level = 0,
                 choiceId = "FighterFightingStyleChoice",
+                Name = "Fighting style",
                 Feature = "Archery: You gain a + 2 bonus to Attack rolls you make with Ranged Weapons.," +
                 "Defense: While you are wearing armor you gain a + 1 bonus to AC.," +
                 "Dueling: When you are wielding a melee weapon in one hand and no other Weapons you gain a + 2 bonus to Damage Rolls with that weapon." +
@@ -225,6 +227,28 @@ namespace CharacterRoller.Data
                 "Great Weapon Fighting: When you roll a 1 or 2 on a damage die for an Attack you make with a melee weapon that you are wielding with two hands you can reroll the die and must use the new roll even if the new roll is a 1 or a 2. The weapon must have the Two - Handed or Versatile property for you to gain this benefit.," +
                 "Protection: When a creature you can see attacks a target other than you that is within 5 feet of you you can use your Reaction to impose disadvantage on the Attack roll. You must be wielding a Shield.," +
                 "Two-Weapon Fighting: When you engage in two-weapon fighting you can add your ability modifier to the damage of the second Attack."
+
+            });
+            modelBuilder.Entity<ClassFeature>().HasData(new ClassFeature()
+            {
+                Class = "fighter",
+                classFeatureId = "FighterSecondWind",
+                Level = 0,
+                Name = "Second Wind",
+                Feature = "You have a limited well of stamina that you can draw on to protect yourself from harm. " +
+                "On your turn you can use a bonus action to regain hit points equal to 1d10 + your fighter level." +
+                "Once you use this feature you must finish a short or long rest before you can use it again."
+            });
+            modelBuilder.Entity<ClassFeature>().HasData(new ClassFeature()
+            {
+                Class = "fighter",
+                classFeatureId = "FighterActionSurge",
+                Level = 2,
+                Name = "Action Surge",
+                Feature = "Starting at 2nd level, you can push yourself beyond your normal limits for a moment." +
+                " On your turn, you can take one additional action on top of your regular action and a possible bonus action. " +
+                "Once you use this feature, you must finish a short or long rest before you can use it again. " +
+                "Starting at 17th level, you can use it twice before a rest, but only once on the same turn."
 
             });
             #endregion

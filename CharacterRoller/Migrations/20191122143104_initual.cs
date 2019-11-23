@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace CharacterRoller.Migrations
 {
-    public partial class initial : Migration
+    public partial class initual : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -52,6 +52,7 @@ namespace CharacterRoller.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(nullable: false),
+                    Type = table.Column<string>(nullable: true),
                     Options = table.Column<string>(nullable: true),
                     AllowedNumberOfOptions = table.Column<int>(nullable: false),
                     Discriminator = table.Column<string>(nullable: false),
@@ -218,6 +219,7 @@ namespace CharacterRoller.Migrations
                     classFeatureId = table.Column<string>(nullable: false),
                     Level = table.Column<int>(nullable: false),
                     choiceId = table.Column<string>(nullable: true),
+                    Name = table.Column<string>(nullable: true),
                     Class = table.Column<string>(nullable: true),
                     Feature = table.Column<string>(nullable: true)
                 },
@@ -271,26 +273,39 @@ namespace CharacterRoller.Migrations
 
             migrationBuilder.InsertData(
                 table: "Choices",
-                columns: new[] { "Id", "AllowedNumberOfOptions", "Discriminator", "Options" },
-                values: new object[] { "FighterProficiencyChoice", 2, "Choice", "Acrobatics,Animal Handling,Athletics,History,Insight,Intimidation,Perception,Survival" });
+                columns: new[] { "Id", "AllowedNumberOfOptions", "Discriminator", "Options", "Type" },
+                values: new object[,]
+                {
+                    { "FighterProficiencyChoice", 2, "Choice", "Acrobatics,Animal Handling,Athletics,History,Insight,Intimidation,Perception,Survival", "Proficiency" },
+                    { "FighterFightingStyleChoice", 1, "Choice", "Archery: You gain a + 2 bonus to Attack rolls you make with Ranged Weapons.,Defense: While you are wearing armor you gain a + 1 bonus to AC.,Dueling: When you are wielding a melee weapon in one hand and no other Weapons you gain a + 2 bonus to Damage Rolls with that weapon.Great Weapon Fighting: When you roll a 1 or 2 on a damage die for an Attack you make with a melee weapon that you are wielding with two hands you can reroll the die and must use the new roll even if the new roll is a 1 or a 2. The weapon must have the Two - Handed or Versatile property for you to gain this benefit.,Protection: When a creature you can see attacks a target other than you that is within 5 feet of you you can use your Reaction to impose disadvantage on the Attack roll. You must be wielding a Shield.,Two-Weapon Fighting: When you engage in two-weapon fighting you can add your ability modifier to the damage of the second Attack.", "Feature" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "ClassFeatures",
+                columns: new[] { "classFeatureId", "Class", "Feature", "Level", "Name", "choiceId" },
+                values: new object[,]
+                {
+                    { "FighterSecondWind", "fighter", "You have a limited well of stamina that you can draw on to protect yourself from harm. On your turn you can use a bonus action to regain hit points equal to 1d10 + your fighter level.Once you use this feature you must finish a short or long rest before you can use it again.", 0, "Second Wind", null },
+                    { "FighterActionSurge", "fighter", "Starting at 2nd level, you can push yourself beyond your normal limits for a moment. On your turn, you can take one additional action on top of your regular action and a possible bonus action. Once you use this feature, you must finish a short or long rest before you can use it again. Starting at 17th level, you can use it twice before a rest, but only once on the same turn.", 2, "Action Surge", null }
+                });
 
             migrationBuilder.InsertData(
                 table: "Classes",
                 columns: new[] { "Id", "AbilityScoreImprovements", "Name" },
                 values: new object[,]
                 {
-                    { "wizard", null, "Wizard" },
-                    { "warlock", null, "Warlock" },
-                    { "sorcerer", null, "Sorcerer" },
-                    { "ranger", null, "Ranger" },
-                    { "paladin", null, "Paladin" },
-                    { "rogue", null, "Rogue" },
-                    { "fighter", null, "Fighter" },
-                    { "druid", null, "Druid" },
                     { "cleric", null, "Cleric" },
                     { "bard", null, "Bard" },
                     { "barbarian", null, "Barbarian" },
-                    { "monk", null, "Monk" }
+                    { "warlock", null, "Warlock" },
+                    { "sorcerer", null, "Sorcerer" },
+                    { "rogue", null, "Rogue" },
+                    { "wizard", null, "Wizard" },
+                    { "paladin", null, "Paladin" },
+                    { "monk", null, "Monk" },
+                    { "fighter", null, "Fighter" },
+                    { "druid", null, "Druid" },
+                    { "ranger", null, "Ranger" }
                 });
 
             migrationBuilder.InsertData(
@@ -325,8 +340,13 @@ namespace CharacterRoller.Migrations
 
             migrationBuilder.InsertData(
                 table: "ClassFeatures",
-                columns: new[] { "classFeatureId", "Class", "Feature", "Level", "choiceId" },
-                values: new object[] { "fighterProficiencyChoice", "fighter", "Skills: Choose two Skills from Acrobatics, Animal Handling, Athletics, History, Insight, Intimidation, Perception, and Survival", 0, "FighterProficiencyChoice" });
+                columns: new[] { "classFeatureId", "Class", "Feature", "Level", "Name", "choiceId" },
+                values: new object[] { "fighterProficiencyChoice", "fighter", "Skills: Choose two Skills from Acrobatics, Animal Handling, Athletics, History, Insight, Intimidation, Perception, and Survival", 0, "Proficiencies", "FighterProficiencyChoice" });
+
+            migrationBuilder.InsertData(
+                table: "ClassFeatures",
+                columns: new[] { "classFeatureId", "Class", "Feature", "Level", "Name", "choiceId" },
+                values: new object[] { "FighterFightingStyle", "fighter", "Archery: You gain a + 2 bonus to Attack rolls you make with Ranged Weapons.,Defense: While you are wearing armor you gain a + 1 bonus to AC.,Dueling: When you are wielding a melee weapon in one hand and no other Weapons you gain a + 2 bonus to Damage Rolls with that weapon.Great Weapon Fighting: When you roll a 1 or 2 on a damage die for an Attack you make with a melee weapon that you are wielding with two hands you can reroll the die and must use the new roll even if the new roll is a 1 or a 2. The weapon must have the Two - Handed or Versatile property for you to gain this benefit.,Protection: When a creature you can see attacks a target other than you that is within 5 feet of you you can use your Reaction to impose disadvantage on the Attack roll. You must be wielding a Shield.,Two-Weapon Fighting: When you engage in two-weapon fighting you can add your ability modifier to the damage of the second Attack.", 0, "Fighting style", "FighterFightingStyleChoice" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",

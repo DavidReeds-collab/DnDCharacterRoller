@@ -472,11 +472,16 @@ namespace CharacterRoller.Models
             {
                 Dictionary<string, string> returnDictionary = new Dictionary<string, string>();
 
+                if(this.characterClass == null)
+                {
+                    return returnDictionary;
+                }
+
                 foreach (ClassFeature classFeature in this.characterClass.classFeatures)
                 {
                     if (classFeature.choiceId == null && classFeature.Level <= this.Level)
                     {
-                        returnDictionary.Add(classFeature.Class + " " + classFeature.Level, classFeature.Feature);
+                        returnDictionary.Add("Level" + " " + classFeature.Level + $", {classFeature.Name}", classFeature.Feature);
                     }
                     else if ((classFeature.choiceId != null && classFeature.Level <= this.Level))
                     {
@@ -489,16 +494,16 @@ namespace CharacterRoller.Models
 
                         if (featureChoice != null)
                         {
-                            returnDictionary.Add(classFeature.Class + " " + classFeature.Level, classFeature.Feature);
-                            returnDictionary.Add("Chosen option:", featureChoice.ChosenFeatures);
+                            returnDictionary.Add("Level" + " " + classFeature.Level + $", {classFeature.Name}", classFeature.Feature);
+                            returnDictionary.Add($"Chosen {classFeature.Name}:", featureChoice.ChosenFeatures);
                         }
                         else if (proficiencyChoice != null)
                         {
-                            returnDictionary.Add(classFeature.Class + " " + classFeature.Level, classFeature.Feature);
-                            returnDictionary.Add("Chosen option:", proficiencyChoice.ChosenProficiencies);
+                            returnDictionary.Add("Level" + " " + classFeature.Level + $", {classFeature.Name}", classFeature.Feature);
+                            returnDictionary.Add($"Chosen {classFeature.Name}:", proficiencyChoice.ChosenProficiencies);
                         }
 
-                        
+
                     }
                 }
                 returnDictionary.Add("test", "test");
@@ -542,77 +547,4 @@ namespace CharacterRoller.Models
         
     }
    
-
-
-    public class Race
-    {
-        [Key]
-        public string Id { get; set; }
-        [Display(Name = "Race")]
-        public string Name { get; set; }
-        public string AbilityScoreImprovements { get; set; }
-
-        public List<Character> Characters = new List<Character>();
-
-        public List<RaceFeature> raceFeatures = new List<RaceFeature>();
-
-        public Race()
-        {
-        }
-    }
-
-    public class Races
-    {
-        public List<SelectListItem> races { get; set; }
-
-        public string id { get; set; }
-
-        public string Race { get; set; }
-    }
-
-    public class RaceFeature
-    {
-        [Display(Name = "Racial Feature")]
-        public string raceFeatureName { get; set; }
-        [Key]
-        public string raceFeatureId
-        {
-            get; set;
-        }
-        public string race { get; set; }
-        public string Feature { get; set; }
-
-
-        public RaceFeature()
-        {
-            raceFeatureId = this.race + this.raceFeatureName;
-        }
-    }
-
-    public class Class
-    {
-        [Key]
-        public string Id { get; set; }
-        [Display(Name = "Class")]
-        public string Name { get; set; }
-        public List<ClassFeature> classFeatures = new List<ClassFeature>();
-        public List<Character> Characters = new List<Character>();
-        public string AbilityScoreImprovements { get; set; }
-
-        public Class()
-        {
-        }
-    }
-
-    public class ClassFeature
-    {
-        public string classFeatureId { get; set; }
-        public int Level { get; set; }
-        public string choiceId { get; set; }
-        public Choice Choice { get; set; } = null;
-
-
-        public string Class { get; set; }
-        public string Feature { get; set; }
-    }   
 }
